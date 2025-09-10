@@ -46,6 +46,10 @@ export default function LoginForm() {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
+      <p>
+        Don't have an account? <a href="/register">Sign Up</a>
+      </p>
+
       <button type="submit">Login</button>
     </form>
   );
