@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import SignUpPage from "./pages/SignUpPage";
 
 export default function App() {
   return (
@@ -9,8 +9,8 @@ export default function App() {
         {/* halaman login */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* halaman register */}
-        <Route path="/register" element={<RegisterPage />} />
+        {/* halaman sign up */}
+        <Route path="/signup" element={<SignUpPage />} />
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
