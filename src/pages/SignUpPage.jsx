@@ -98,9 +98,9 @@ export default function SignUpPage() {
                   name="name"
                   id="name"
                   value={name}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   className="pl-12 mb-2 bg-gray-50 text-gray-600 border focus:border-transparent border-gray-300 sm:text-sm rounded-lg ring-3 ring-transparent focus:ring-1 focus:outline-hidden focus:ring-gray-400 block w-full p-2.5 rounded-l-lg py-3 px-4"
-                  placeholder="user@gmail.com"
+                  placeholder="John Doe"
                 />
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            <div className="pb-6">
+            <div className="pb-2">
               <label
                 for="confirmpassword"
                 className="block mb-2 text-sm font-medium text-[#111827]"
@@ -220,13 +220,13 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500 p-0">{error}</p>}
 
             <button
               type="submit"
               className="w-full text-[#FFFFFF] bg-[#574ff2] focus:outline-2 focus:outline-offset-2 focus:outline-[#3731ab] active:bg-[#3731ab] hover:bg-[#3731ab]  font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-6 cursor-pointer"
             >
-              Login
+              Sign Up
             </button>
             <div className="text-sm font-light text-[#6B7280] flex items-center justify-center">
               <p>

@@ -136,7 +136,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full text-[#FFFFFF] bg-[#574ff2] focus:outline-2 focus:outline-offset-2 focus:outline-[#3731ab] active:bg-[#3731ab] hover:bg-[#3731ab]  font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-6 cursor-pointer"
             >
-              Login
+              Log In
             </button>
             <div className="text-sm font-light text-[#6B7280] flex items-center justify-center">
               <p>
