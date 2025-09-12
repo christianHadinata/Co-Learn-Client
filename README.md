@@ -1,4 +1,8 @@
-library to install (npm install <lib>):
+web referensi :
+superlsit
+stripe
 
-1. react-router-dom
-2. tailwindcss
+warna :
+#06CDFF //blue
+#E1ACFF //green
+#ACFFB7 //purple
