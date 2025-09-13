@@ -3,7 +3,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MainLayout from "./components/MainLayout";
 import Homepage from "./pages/Homepage";
-import Profile from "./components/Profile";
+import Profile from "./pages/ProfilePage";
 export default function App() {
   return (
     <BrowserRouter>
