@@ -1,0 +1,63 @@
+.profile-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.profile-card {
+  background: #f3f3f3;
+  padding: 20px;
+  width: 350px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.profile-avatar img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: #0077ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005fcc;
+}
+
+.tag {
+  display: inline-block;
+  background: lightgreen;
+  padding: 3px 8px;
+  margin: 3px;
+  border-radius: 6px;
+  font-size: 12px;
+}
