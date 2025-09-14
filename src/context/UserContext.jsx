@@ -13,6 +13,13 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
+  const updateUser = (updatedUserData) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      ...updatedUserData,
+    }));
+  };
+
   const logoutUser = () => {
     setUser(null);
     // Hapus data user dan token dari localStorage
@@ -21,7 +28,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, loginUser, logoutUser }}>
+    <UserContext.Provider value={{ user, loginUser, logoutUser, updateUser }}>
       {children}
     </UserContext.Provider>
   );

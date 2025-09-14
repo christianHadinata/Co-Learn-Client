@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import "./navbar.css";
 
-import userIcon from "../assets/icon.jpg";
+// import userIcon from "../assets/icon.jpg";
 
 import { UserContext } from "../context/User";
 import ProfileDropDown from "./ProfileDropDown";

@@ -1,26 +1,111 @@
-import { useState } from "react";
-import userIcon from "../assets/icon.jpg"; 
+import { useContext, useEffect, useState } from "react";
+import { WithContext as ReactTags } from "react-tag-input";
+import userIcon from "../assets/icon.jpg";
+import { AxiosInstance } from "../utils/axiosInstance";
+import { toast } from "react-toastify";
+import { UserContext } from "../context/User";
+
+const KeyCodes = {
+  comma: 188,
+  enter: 13,
+};
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter];
+
+const RemoveComponent = ({ onRemove, className }) => {
+  return (
+    <button onClick={onRemove} className={className}>
+      x
+    </button>
+  );
+};
 
 export default function Profile() {
   const [profile, setProfile] = useState({
-    name: "Lorem ipsum Lorem ipsum",
-    biography: "Lorem ipsum lorem ipsum",
-    country: "Lorem ipsum Lorem ipsum",
-    interests: ["coding", "reading", "gaming"],
+    name: "",
+    biography: "",
+    country: "",
+    interests: [],
   });
 
   const [isEditing, setIsEditing] = useState(false);
+
+  const { updateUser } = useContext(UserContext);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const { data } = await AxiosInstance.get(
+        `http://localhost:5000/api/v1/users/`
+      );
+
+      const { user_name, user_biography, user_country, user_interests } =
+        data.data;
+
+      const profileData = {
+        name: user_name,
+        biography: user_biography,
+        country: user_country,
+        interests: user_interests.map((interest) => ({
+          id: interest,
+          text: interest,
+        })),
+      };
+
+      console.log(data);
+      console.log(profileData);
+      setProfile(profileData);
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleInterestsChange = (e) => {
+  const handleDelete = (i) => {
     setProfile((prev) => ({
       ...prev,
-      interests: e.target.value.split(",").map((i) => i.trim()),
+      interests: prev.interests.filter((tag, index) => index !== i),
     }));
+  };
+
+  const handleAddition = (tag) => {
+    setProfile((prev) => ({
+      ...prev,
+      interests: [...prev.interests, tag],
+    }));
+  };
+
+  const handleSave = async () => {
+    const savedProfile = {
+      ...profile,
+      interests: profile.interests.map((i) => i.text),
+    };
+    console.log(savedProfile);
+
+    try {
+      const { data } = await AxiosInstance.patch(
+        `http://localhost:5000/api/v1/users/profile`,
+        {
+          user_name: savedProfile.name,
+          user_biography: savedProfile.biography,
+          user_country: savedProfile.country,
+          user_interests: savedProfile.interests,
+        }
+      );
+
+      console.log(data);
+
+      if (data.success === true) {
+        const updatedData = { user_name: savedProfile.name };
+        updateUser(updatedData);
+        toast.success("Success! Profile Updated");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -52,7 +137,7 @@ export default function Profile() {
                   key={idx}
                   className="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full mr-2 mb-1"
                 >
-                  {i}
+                  {i.text}
                 </span>
               ))}
             </p>
@@ -103,16 +188,29 @@ export default function Profile() {
 
             <label className="block mb-4 text-sm font-medium text-gray-700">
               Interests:
-              <input
-                type="text"
-                value={profile.interests.join(", ")}
-                onChange={handleInterestsChange}
-                className="mt-1 block w-full p-2.5 text-gray-600 bg-gray-50 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none"
+              <ReactTags
+                tags={profile.interests}
+                handleDelete={handleDelete}
+                handleAddition={handleAddition}
+                delimiters={delimiters}
+                placeholder="Add interests..."
+                inputFieldPosition="bottom"
+                classNames={{
+                  tag: "inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full mr-2 mb-1 cursor-pointer",
+                  remove:
+                    "ml-2 text-red-600 hover:text-red-800 font-bold cursor-pointer",
+                  tagInputField:
+                    "w-full p-2.5 text-gray-600 bg-gray-50 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none",
+                }}
+                removeComponent={RemoveComponent}
               />
             </label>
 
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={() => {
+                setIsEditing(false);
+                handleSave();
+              }}
               className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 transition-colors"
             >
               Save
