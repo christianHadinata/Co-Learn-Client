@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./style.css";
 import { toast } from "react-toastify";
 export default function LoginPage() {
@@ -157,12 +157,12 @@ export default function LoginPage() {
             <div className="text-sm font-light text-[#6B7280] flex items-center justify-center">
               <p>
                 New to CoLearn?{" "}
-                <a
-                  href="/signup"
+                <Link
+                  to="/signup"
                   className="font-medium text-[#4F46E5] hover:underline"
                 >
                   Sign Up
-                </a>
+                </Link>
               </p>
             </div>
           </form>

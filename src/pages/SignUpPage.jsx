@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./style.css";
 import { AxiosInstance } from "../utils/axiosInstance.js";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -257,12 +257,12 @@ export default function SignUpPage() {
             <div className="text-sm font-light text-[#6B7280] flex items-center justify-center">
               <p>
                 Already have an account?{" "}
-                <a
-                  href="/login"
+                <Link
+                  to="/login"
                   className="font-medium text-[#4F46E5] hover:underline"
                 >
                   Log In
-                </a>
+                </Link>
               </p>
             </div>
           </form>
