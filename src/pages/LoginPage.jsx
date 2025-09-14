@@ -1,9 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./style.css";
+import { toast } from "react-toastify";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const location = useLocation();
+
+  const hasToastShown = useRef(false); // ngakalin react strict mode, biar toast nya ga muncul 2x
+
+  useEffect(() => {
+    if (location.state?.successMessage && !hasToastShown.current) {
+      toast.success(location.state.successMessage);
+      hasToastShown.current = true;
+
+      // biar kalau di refresh, ga muncul lg notif nya
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

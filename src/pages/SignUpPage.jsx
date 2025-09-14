@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./style.css";
+import { AxiosInstance } from "../utils/axiosInstance.js";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -8,7 +10,9 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -35,6 +39,28 @@ export default function SignUpPage() {
     }
 
     console.log("Register submitted");
+
+    try {
+      const { data } = await AxiosInstance.post(
+        "http://localhost:5000/api/v1/users/register",
+        {
+          user_name: name,
+          user_email: email,
+          user_password: password,
+        }
+      );
+
+      if (data.data.user_id) {
+        navigate("/login", {
+          state: {
+            successMessage: "Success! User Successfully Registered",
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      setError(error.response?.data?.message);
+    }
   };
 
   return (
