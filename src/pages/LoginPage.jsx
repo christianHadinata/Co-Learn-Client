@@ -1,7 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./style.css";
 import { toast } from "react-toastify";
+import { AxiosInstance } from "../utils/axiosInstance";
+import { UserContext } from "../context/User";
+import { jwtDecode } from "jwt-decode";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,6 +14,10 @@ export default function LoginPage() {
   const location = useLocation();
 
   const hasToastShown = useRef(false); // ngakalin react strict mode, biar toast nya ga muncul 2x
+
+  const { loginUser } = useContext(UserContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state?.successMessage && !hasToastShown.current) {
@@ -21,7 +29,7 @@ export default function LoginPage() {
     }
   }, [location.state]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -38,6 +46,27 @@ export default function LoginPage() {
 
     //debug
     console.log("Login submitted");
+
+    try {
+      const { data } = await AxiosInstance.post(
+        `http://localhost:5000/api/v1/users/login`,
+        {
+          user_email: email,
+          user_password: password,
+        }
+      );
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        const decodedUser = jwtDecode(data.token);
+        console.log(decodedUser);
+        localStorage.setItem("user", JSON.stringify(decodedUser));
+        loginUser(decodedUser);
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      setError(error.response?.data?.message);
+    }
   };
 
   return (
