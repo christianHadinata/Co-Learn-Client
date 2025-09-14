@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { WithContext as ReactTags } from "react-tag-input";
-import userIcon from "../assets/icon.jpg";
+// import userIcon from "../assets/icon.jpg";
 import { AxiosInstance } from "../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/User";
@@ -28,6 +28,8 @@ export default function Profile() {
     interests: [],
   });
 
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState("");
+
   const [isEditing, setIsEditing] = useState(false);
 
   const { updateUser } = useContext(UserContext);
@@ -38,8 +40,13 @@ export default function Profile() {
         `http://localhost:5000/api/v1/users/`
       );
 
-      const { user_name, user_biography, user_country, user_interests } =
-        data.data;
+      const {
+        user_name,
+        user_biography,
+        user_country,
+        user_interests,
+        user_photo_url,
+      } = data.data;
 
       const profileData = {
         name: user_name,
@@ -54,6 +61,7 @@ export default function Profile() {
       console.log(data);
       console.log(profileData);
       setProfile(profileData);
+      setProfilePhotoUrl(user_photo_url);
     };
 
     fetchProfile();
@@ -76,6 +84,31 @@ export default function Profile() {
       ...prev,
       interests: [...prev.interests, tag],
     }));
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("user_photo", file);
+        const { data } = await AxiosInstance.patch(
+          `http://localhost:5000/api/v1/users/photo`,
+          formData
+        );
+
+        console.log(data);
+
+        if (data.success === true) {
+          setProfilePhotoUrl(data.data.user_photo_url);
+          const updatedData = { user_photo_url: data.data.user_photo_url };
+          updateUser(updatedData);
+          toast.success("Success! Profile Photo Updated");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -112,11 +145,35 @@ export default function Profile() {
     <div className="gradient-bg relative min-h-screen flex justify-center items-center">
       <div className="bg-white/50 backdrop-blur-md rounded-xl shadow-xl p-8 w-96 relative z-10">
         <div className="flex justify-center mb-6">
-          <img
-            src={userIcon}
-            alt="User"
-            className="w-20 h-20 rounded-full border-2 border-gray-200"
-          />
+          <div className="flex justify-center mb-6">
+            <label
+              htmlFor="profile-picture-input"
+              className="cursor-pointer relative"
+            >
+              <img
+                src={
+                  profilePhotoUrl
+                    ? `http://localhost:5000/${profilePhotoUrl}`
+                    : "../src/assets/default-profile.jpg"
+                }
+                alt="User"
+                className="w-20 h-20 rounded-full border-2 border-gray-200 object-cover"
+              />
+              {/* Ikon Pensil */}
+              <img
+                src="../src/assets/pencil-edit.png"
+                alt="Edit Profile"
+                className="absolute bottom-0 right-0 z-20 h-6 w-6"
+              />
+            </label>
+            <input
+              id="profile-picture-input"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+            />
+          </div>
         </div>
 
         {!isEditing ? (

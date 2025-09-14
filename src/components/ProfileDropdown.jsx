@@ -5,11 +5,16 @@ import { Link } from "react-router-dom";
 
 export default function ProfileDropDown() {
   const { user, logoutUser } = useContext(UserContext);
+  console.log(user);
   return (
     <div className="relative group">
       <div className="rounded-md p-2 hover:bg-gray-100 cursor-pointer">
         <img
-          src={"../src/assets/icon.jpg"}
+          src={
+            user.user_photo_url
+              ? `http://localhost:5000/${user.user_photo_url}`
+              : "../src/assets/default-profile.jpg"
+          }
           width={35}
           height={35}
           alt="profile"
