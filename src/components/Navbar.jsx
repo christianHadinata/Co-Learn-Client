@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import "./navbar.css";
 
 import userIcon from "../assets/icon.jpg";
 
+import { UserContext } from "../context/User";
+import ProfileDropDown from "./ProfileDropDown";
+
 function Navbar() {
+  const { user } = useContext(UserContext);
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -23,9 +27,18 @@ function Navbar() {
           + Create Learning Space
         </Link>
 
-        <Link to="/profile" className="navbar-user-icon">
-          <img src={userIcon} alt="User" />
-        </Link>
+        {user ? (
+          <div className="">
+            <ProfileDropDown />
+          </div>
+        ) : (
+          <Link
+            to={"/login"}
+            className="text-white bg-[#574ff2] focus:outline-[#3731ab] active:bg-[#3731ab] hover:bg-[#3731ab] px-4 py-2 font-medium rounded-lg text-sm cursor-pointer"
+          >
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
