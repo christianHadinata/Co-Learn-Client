@@ -4,6 +4,7 @@ import { WithContext as ReactTags } from "react-tag-input";
 import { AxiosInstance } from "../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { UserContext } from "../context/User";
+import { useNavigate } from "react-router-dom";
 
 const KeyCodes = {
   comma: 188,
@@ -33,6 +34,14 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
 
   const { updateUser } = useContext(UserContext);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  });
 
   useEffect(() => {
     const fetchProfile = async () => {
