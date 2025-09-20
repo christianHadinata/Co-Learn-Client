@@ -10,6 +10,7 @@ import ActiveUsersList from "../components/ActiveUsersList";
 export default function ViewSpace() {
   const { id } = useParams();
   const { user } = useContext(UserContext);
+  const [joined, setJoined] = useState(false);
   const [space, setSpace] = useState(null);
 
   useEffect(() => {
@@ -23,6 +24,11 @@ export default function ViewSpace() {
     }
   }, [id]);
 
+  const handleJoinToggle = () => {
+    // sementara, nnti ada hubungin sm backend dkk
+    setJoined((prev) => !prev);
+  };
+
   if (!space) return <div className="p-10">Loading…</div>; //biar tunggu space terisi dulu (fetch data & udh ga null) sebelum page dirender
 
   return (
@@ -34,13 +40,21 @@ export default function ViewSpace() {
           <p className="text-sm text-gray-500">by: {space.creator}</p>
         </div>
         {user ? (
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-[#3731ab] hover:cursor-pointer">
-            Join
+          <button
+            onClick={handleJoinToggle}
+            className={`px-4 py-2 rounded-lg cursor-pointer text-white transition 
+                        ${
+                          joined
+                            ? "bg-red-600 hover:bg-red-700"
+                            : " bg-[#574ff2] hover:bg-[#3731ab]"
+                        }`}
+          >
+            {joined ? "Leave" : "Join"}
           </button>
         ) : (
           <Link
             to="/signup"
-            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-[#3731ab] cursor-pointer"
+            className="px-4 py-2  bg-[#574ff2] text-white rounded-lg hover:bg-[#3731ab] cursor-pointer"
           >
             Sign up to Join
           </Link>
@@ -117,7 +131,7 @@ export default function ViewSpace() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold">Posts</h3>
                 {!!user && (
-                  <button className="cursor-pointer px-4 py-2 bg-indigo-600 text-white rounded hover:bg-[#3731ab]">
+                  <button className="cursor-pointer px-4 py-2  bg-[#574ff2] text-white rounded-lg hover:bg-[#3731ab]">
                     + New Post
                   </button>
                 )}
