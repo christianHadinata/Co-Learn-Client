@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 export default function Card({ id, thumbnail, title, members, lastUpdate }) {
   return (
     <Link to={`/space/${id}`}>
-      <div className="bg-gray-100 rounded-2xl shadow-md hover:shadow-xl transition p-4 flex flex-col hover:scale-105 cursor-pointer">
-        <div className="h-40 w-full mb-4 overflow-hidden rounded-lg bg-gray-300">
+      <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 flex flex-col hover:scale-105 cursor-pointer">
+        <div className="h-40 w-full mb-4 overflow-hidden rounded-lg bg-white">
           {thumbnail ? (
             <img
               src={thumbnail}

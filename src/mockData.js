@@ -9,7 +9,7 @@ export const mockSpaces = [
     prerequisites: ["HTML", "CSS", "JavaScript"],
     members: 17,
     lastUpdate: "5 September 2025",
-    thumbnail: "https://placehold.co/600x400",
+    thumbnail: "https://placehold.co/600x400/333333/FFFFFF.png",
     posts: [1, 2], // post id
     activeUsers: ["Alice", "Bob", "Charlie"],
     related: [2, 3], // space id
@@ -23,7 +23,7 @@ export const mockSpaces = [
     prerequisites: ["JavaScript Basics"],
     members: 24,
     lastUpdate: "7 September 2025",
-    thumbnail: "https://placehold.co/600x400",
+    thumbnail: "https://placehold.co/600x400/333333/FFFFFF.png",
     posts: [3],
     activeUsers: ["Jane", "Tom"],
     related: [1],
@@ -36,7 +36,7 @@ export const mockSpaces = [
     prerequisites: ["Python", "Math Basics"],
     members: 30,
     lastUpdate: "8 September 2025",
-    thumbnail: "https://placehold.co/600x400",
+    thumbnail: "https://placehold.co/600x400/333333/FFFFFF.png",
     posts: [],
     activeUsers: [],
     related: [],
