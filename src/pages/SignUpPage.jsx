@@ -95,7 +95,7 @@ export default function SignUpPage() {
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div className="pb-1">
               <label
-                for="name"
+                htmlFor="name"
                 className="block mb-2 text-sm font-medium text-[#111827]"
               >
                 Name:
@@ -110,10 +110,10 @@ export default function SignUpPage() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-signature-icon lucide-signature"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-signature-icon lucide-signature"
                   >
                     <path d="m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1c0-2.545-3.991-3.97-8.5-4a1 1 0 0 0 0 5c4.153 0 4.745-11.295 5.708-13.5a2.5 2.5 0 1 1 3.31 3.284" />
                     <path d="M3 21h18" />
@@ -132,7 +132,7 @@ export default function SignUpPage() {
             </div>
             <div className="pb-1">
               <label
-                for="email"
+                htmlFor="email"
                 className="block mb-2 text-sm font-medium text-[#111827]"
               >
                 Email:
@@ -147,10 +147,10 @@ export default function SignUpPage() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-mail"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-mail"
                   >
                     <rect width="20" height="16" x="2" y="4" rx="2"></rect>
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
@@ -170,7 +170,7 @@ export default function SignUpPage() {
 
             <div className="pb-1">
               <label
-                for="password"
+                htmlFor="password"
                 className="block mb-2 text-sm font-medium text-[#111827]"
               >
                 Password:
@@ -184,9 +184,9 @@ export default function SignUpPage() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-square-asterisk"
                   >
                     <rect width="18" height="18" x="3" y="3" rx="2"></rect>
@@ -209,7 +209,7 @@ export default function SignUpPage() {
 
             <div className="pb-2">
               <label
-                for="confirmpassword"
+                htmlFor="confirmpassword"
                 className="block mb-2 text-sm font-medium text-[#111827]"
               >
                 Confirm Password:
@@ -223,9 +223,9 @@ export default function SignUpPage() {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="lucide lucide-square-asterisk"
                   >
                     <rect width="18" height="18" x="3" y="3" rx="2"></rect>
