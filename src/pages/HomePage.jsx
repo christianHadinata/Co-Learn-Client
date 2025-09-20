@@ -2,36 +2,13 @@ import React, { useContext, useState, useEffect } from "react";
 import Card from "../components/Card";
 import { UserContext } from "../context/User";
 import { Link } from "react-router-dom";
+import { mockSpaces } from "../mockData";
 
 export default function Homepage() {
   const { user } = useContext(UserContext);
   const [spaces, setSpaces] = useState([]);
 
   useEffect(() => {
-    // hardcode/mock karena belom ada data
-    const mockSpaces = [
-      {
-        id: 1,
-        thumbnail: "https://placehold.co/600x400",
-        title: "React Basics",
-        members: 17,
-        lastUpdate: "5 September 2025",
-      },
-      {
-        id: 2,
-        thumbnail: "https://placehold.co/600x400",
-        title: "Advanced JS",
-        members: 24,
-        lastUpdate: "5 September 2025",
-      },
-      {
-        id: 3,
-        thumbnail: "https://placehold.co/600x400",
-        title: "Machine Learning",
-        members: 30,
-        lastUpdate: "5 September 2025",
-      },
-    ];
     setSpaces(mockSpaces);
   }, []);
 
@@ -70,6 +47,7 @@ export default function Homepage() {
           {spaces.map((space) => (
             <Card
               key={space.id}
+              id={space.id}
               thumbnail={space.thumbnail}
               title={space.title}
               members={space.members}
