@@ -85,7 +85,15 @@ export default function LoginPage() {
 
       {/* Card */}
       <div className="absolute flex items-center justify-center min-h-full min-w-full z-10 ">
-        <div className="login-card bg-white/30 backdrop-blur-lg rounded-2xl shadow-lg p-8 flex flex-col w-full md:w-1/2 xl:w-1/3 2xl:w-1/3 3xl:w-1/4 mx-auto md:p-10 2xl:p-12 3xl:p-14 ">
+        <div className="login-card relative bg-white/30 backdrop-blur-lg rounded-2xl shadow-lg p-8 flex flex-col w-full md:w-1/2 xl:w-1/3 2xl:w-1/3 3xl:w-1/4 mx-auto md:p-10 2xl:p-12 3xl:p-14 ">
+          {/* Back to Home */}
+          <Link
+            to="/"
+            className="text-sm absolute top-6 left-6 text-[#4F46E5] hover:underline self-start mb-4"
+          >
+            {"<"}Back to Home
+          </Link>
+
           <div className="flex flex-col justify-center mx-auto items-center gap-3 pb-4">
             <div>
               <img
@@ -98,6 +106,7 @@ export default function LoginPage() {
               Log In
             </h1>
           </div>
+
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div className="pb-2">
               <label
