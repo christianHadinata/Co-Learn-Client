@@ -5,6 +5,7 @@ import SignUpPage from "./pages/SignUpPage";
 import MainLayout from "./components/MainLayout";
 import Homepage from "./pages/Homepage";
 import Profile from "./pages/ProfilePage";
+import NewLearningSpace from "./pages/CreateLearningSpacePage";
 
 import { UserProvider } from "./context/UserContext";
 
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<Homepage />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="create-new-learning-space" element={<NewLearningSpace />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />
