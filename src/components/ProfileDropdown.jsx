@@ -8,7 +8,7 @@ export default function ProfileDropDown() {
   console.log(user);
   return (
     <div className="relative group">
-      <div className="rounded-md p-2 hover:bg-gray-100 cursor-pointer">
+      <div className="rounded-full p-2 hover:bg-gray-100 cursor-pointer">
         <img
           src={
             user.user_photo_url
@@ -18,6 +18,7 @@ export default function ProfileDropDown() {
           width={35}
           height={35}
           alt="profile"
+          className="rounded-full"
         />
       </div>
 

@@ -165,6 +165,39 @@ export default function Profile() {
         </div>
       </div>
 
+        {!isEditing ? (
+          <>
+            <p className="mb-3 text-gray-800">
+              <strong>Name:</strong> {profile.name}
+            </p>
+            <p className="mb-3 text-gray-800">
+              <strong>Biography:</strong> {profile.biography}
+            </p>
+            <p className="mb-3 text-gray-800">
+              <strong>Country:</strong> {profile.country}
+            </p>
+            <p className="mb-4 text-gray-800">
+              <strong>Interests:</strong>{" "}
+              {profile.interests.map((i, idx) => (
+                <span
+                  key={idx}
+                  className="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full mr-2 mb-1"
+                >
+                  {i.text}
+                </span>
+              ))}
+            </p>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 mb-4 transition-colors cursor-pointer"
+            >
+              Edit
+            </button>
+          </>
+        ) : (
+          <>
+            <label className="block mb-3 text-sm font-medium text-gray-700">
+              Name:
       {/* profile card */}
       <div className="absolute w-full min-h-screen flex justify-center items-center z-10">
         <div className="bg-white/50 backdrop-blur-md rounded-xl shadow-xl p-8 w-96 relative z-10">
@@ -287,18 +320,18 @@ export default function Profile() {
                 />
               </label>
 
-              <button
-                onClick={() => {
-                  setIsEditing(false);
-                  handleSave();
-                }}
-                className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 transition-colors"
-              >
-                Save
-              </button>
-            </>
-          )}
-        </div>
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                handleSave();
+              }}
+              className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 transition-colors cursor-pointer"
+            >
+              Save
+            </button>
+          </>
+        )}
+
       </div>
     </React.Fragment>
   );
