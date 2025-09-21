@@ -23,7 +23,7 @@ function Navbar() {
       <div className="navbar-center"></div>
 
       <div className="navbar-right">
-        <Link to="/create" className="navbar-create-btn">
+        <Link to="/create-new-learning-space" className="navbar-create-btn">
           + Create Learning Space
         </Link>
 

@@ -209,7 +209,7 @@ export default function Profile() {
             </p>
             <button
               onClick={() => setIsEditing(true)}
-              className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 mb-4 transition-colors"
+              className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 mb-4 transition-colors cursor-pointer"
             >
               Edit
             </button>
@@ -277,7 +277,7 @@ export default function Profile() {
                 setIsEditing(false);
                 handleSave();
               }}
-              className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 transition-colors"
+              className="w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 transition-colors cursor-pointer"
             >
               Save
             </button>

@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WithContext as ReactTags } from "react-tag-input";
+import { AxiosInstance } from "../utils/axiosInstance";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const KeyCodes = {
   comma: 188,
@@ -22,6 +25,18 @@ export default function CreateLearningSpace() {
     prerequisites: [],
   });
   const [thumbnail, setThumbnail] = useState(null);
+  const [spacePhotoFile, setSpacePhotoFile] = useState("");
+
+  // untuk ngakalin biar bisa upload foto yang sama lagi, setelah submit form (no refresh)
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,15 +61,53 @@ export default function CreateLearningSpace() {
     const file = e.target.files[0];
     if (file) {
       setThumbnail(URL.createObjectURL(file));
+      setSpacePhotoFile(file);
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Form submitted:", {
       ...form,
       prerequisites: form.prerequisites.map((t) => t.text),
       thumbnail,
+      spacePhotoFile,
     });
+
+    try {
+      const formData = new FormData();
+      formData.append("space_photo", spacePhotoFile);
+      formData.append("space_title", form.title);
+      formData.append("space_description", form.description);
+      formData.append(
+        "learning_space_prerequisites",
+        JSON.stringify(form.prerequisites.map((t) => t.text))
+      );
+      const { data } = await AxiosInstance.post(
+        `http://localhost:5000/api/v1/spaces/create_learning_space`,
+        formData
+      );
+
+      console.log(data);
+
+      if (data.success === true) {
+        setForm({
+          title: "",
+          description: "",
+          prerequisites: [],
+        });
+        setThumbnail(null);
+        setSpacePhotoFile("");
+        setFileInputKey(Date.now());
+        toast.success("Success! Learning Space Created");
+      }
+    } catch (error) {
+      console.log(error);
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message);
+      } else {
+        toast.error("Error! Please Try Again...");
+      }
+    }
   };
 
   return (
@@ -148,6 +201,7 @@ export default function CreateLearningSpace() {
               )}
               <input
                 type="file"
+                key={fileInputKey}
                 accept="image/*"
                 onChange={handleImageChange}
                 className="hidden"
@@ -158,7 +212,7 @@ export default function CreateLearningSpace() {
 
         <button
           onClick={handleSubmit}
-          className="mt-8 w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 transition-colors"
+          className="mt-8 w-full text-white bg-[#574ff2] hover:bg-[#3731ab] font-medium rounded-lg text-sm px-5 py-2.5 transition-colors cursor-pointer"
         >
           Create Space
         </button>
