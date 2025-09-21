@@ -6,22 +6,56 @@ import { mockSpaces, mockPosts } from "../mockData";
 
 import PostsList from "../components/PostsList";
 import ActiveUsersList from "../components/ActiveUsersList";
+import { AxiosInstance } from "../utils/axiosInstance";
+import { formatDate } from "../utils/formatDate.js";
 
 export default function ViewSpace() {
   const { id } = useParams();
   const { user } = useContext(UserContext);
   const [joined, setJoined] = useState(false);
   const [space, setSpace] = useState(null);
+  const [relatedSpaces, setRelatedSpaces] = useState([]);
 
   useEffect(() => {
-    const found = mockSpaces.find((s) => s.id === Number(id)); //cari space di mock
-    if (found) {
-      //masukin isinya
-      const posts = mockPosts.filter((p) => p.spaceId === found.id);
-      setSpace({ ...found, posts });
-    } else {
-      setSpace(null);
-    }
+    const fetchDetailSpaceData = async () => {
+      try {
+        const result = await AxiosInstance.get(
+          `http://localhost:5000/api/v1/spaces/${id}`
+        );
+
+        const data = result.data.data;
+
+        setSpace(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchRelatedSpaceData = async () => {
+      try {
+        const result = await AxiosInstance.get(
+          `http://localhost:5000/api/v1/spaces/related/${id}`
+        );
+
+        const data = result.data.data;
+
+        console.log(data);
+        setRelatedSpaces(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    // const found = mockSpaces.find((s) => s.id === Number(id)); //cari space di mock
+    // if (found) {
+    //   //masukin isinya
+    //   const posts = mockPosts.filter((p) => p.spaceId === found.id);
+    //   setSpace({ ...found, posts });
+    // } else {
+    //   setSpace(null);
+    // }
+
+    fetchDetailSpaceData();
+    fetchRelatedSpaceData();
   }, [id]);
 
   const handleJoinToggle = () => {
@@ -36,7 +70,7 @@ export default function ViewSpace() {
       {/* Header */}
       <section className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4 ">
         <div>
-          <h1 className="text-3xl font-bold">{space.title}</h1>
+          <h1 className="text-3xl font-bold">{space.space_title}</h1>
           <p className="text-sm text-gray-500">by: {space.creator}</p>
         </div>
         {user ? (
@@ -67,10 +101,10 @@ export default function ViewSpace() {
           {/* Thumbnail */}
           <div className="md:col-span-1">
             <div className="w-full h-48 md:h-56 rounded-xl overflow-hidden bg-gray-200">
-              {space.thumbnail ? (
+              {space.space_photo_url ? (
                 <img
-                  src={space.thumbnail}
-                  alt={space.title}
+                  src={`http://localhost:5000/${space.space_photo_url}`}
+                  alt={space.space_title}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -84,7 +118,7 @@ export default function ViewSpace() {
           {/* Overview text */}
           <div className="md:col-span-2">
             <h2 className="text-xl font-semibold mb-4">Overview</h2>
-            <p className="text-gray-700">{space.overview}</p>
+            <p className="text-gray-700">{space.space_description}</p>
           </div>
         </div>
       </section>
@@ -93,7 +127,7 @@ export default function ViewSpace() {
       <section>
         <h3 className="font-semibold mb-4">Prerequisites</h3>
         <div className="flex flex-wrap gap-2">
-          {space.prerequisites.length > 0 ? (
+          {space.prerequisites?.length > 0 ? (
             space.prerequisites.map((tag) => (
               <span
                 key={tag}
@@ -113,8 +147,8 @@ export default function ViewSpace() {
         {/* Active users */}
         <div className="md:col-span-1 space-y-8 min-h-[150px]">
           <h3 className="font-semibold mb-4">Active Users</h3>
-          {space.activeUsers.length > 0 ? (
-            <ActiveUsersList users={space.activeUsers} />
+          {mockSpaces[0].activeUsers.length > 0 ? (
+            <ActiveUsersList users={mockSpaces[0].activeUsers} />
           ) : (
             <div className="text-gray-500 flex  h-full">
               No active users yet.
@@ -124,8 +158,18 @@ export default function ViewSpace() {
 
         {/* Posts */}
         <div className="md:col-span-2 min-h-[150px]">
-          {space.posts.length > 0 ? (
-            <PostsList posts={space.posts} />
+          {mockPosts.length > 0 ? (
+            <div className="flex flex-col h-full ">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold">Posts</h3>
+                {!!user && (
+                  <button className="cursor-pointer px-4 py-2  bg-[#574ff2] text-white rounded-lg hover:bg-[#3731ab]">
+                    + New Post
+                  </button>
+                )}
+              </div>
+              <PostsList posts={mockPosts} />
+            </div>
           ) : (
             <div className="flex flex-col h-full ">
               <div className="flex items-center justify-between mb-4">
@@ -145,18 +189,17 @@ export default function ViewSpace() {
       {/* Related Spaces */}
       <section className="mt-10">
         <h3 className="text-xl font-semibold mb-4">Related Learning Spaces</h3>
-        {space.related.length > 0 ? (
+        {relatedSpaces.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {space.related.map((relSpaceId) => {
-              const relSpace = mockSpaces.find((s) => s.id === relSpaceId);
+            {relatedSpaces.map((relSpace) => {
               return (
                 <Card
-                  key={relSpace.id}
-                  id={relSpace.id}
-                  thumbnail={relSpace.thumbnail}
-                  title={relSpace.title}
-                  members={relSpace.members}
-                  lastUpdate={relSpace.lastUpdate}
+                  key={relSpace.learning_space_id}
+                  id={relSpace.learning_space_id}
+                  thumbnail={relSpace.space_photo_url}
+                  title={relSpace.space_title}
+                  members={relSpace.member_count}
+                  lastUpdate={formatDate(relSpace.last_updated_at)}
                 />
               );
             })}

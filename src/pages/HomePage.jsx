@@ -2,29 +2,50 @@ import React, { useContext, useState, useEffect } from "react";
 import Card from "../components/Card";
 import { UserContext } from "../context/User";
 import { Link } from "react-router-dom";
-import { mockSpaces } from "../mockData";
+// import { mockSpaces } from "../mockData";
 import bgImage from "../assets/bg-more.png";
-import bgImage2 from "../assets/bg-less.png";
+// import bgImage2 from "../assets/bg-less.png";
+import { AxiosInstance } from "../utils/axiosInstance";
+import { formatDate } from "../utils/formatDate";
 
 export default function Homepage() {
   const { user } = useContext(UserContext);
   const [spaces, setSpaces] = useState([]);
 
   useEffect(() => {
-    setSpaces(mockSpaces);
+    const fetchAllSpacesData = async () => {
+      try {
+        const result = await AxiosInstance.get(
+          `http://localhost:5000/api/v1/spaces`
+        );
+
+        const data = result.data.data;
+
+        if (data) {
+          setSpaces(data);
+        }
+
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchAllSpacesData();
+    // setSpaces(mockSpaces);
   }, []);
 
   return (
     <div className="bg-center" style={{ backgroundImage: `url(${bgImage})` }}>
       <main className="p-10  pb-[20rem]">
         <section className="flex flex-col justify-center items-center min-h-[66vh]">
-          <h1 className="text-center text-2xl md:text-3xl font-bold ">
+          <h1 className="text-center text-2xl md:text-5xl font-bold ">
             {user ? (
               <>
                 Join a{" "}
                 <a
                   href="#learning-space"
-                  className="text-[#574ff2]hover:underline"
+                  className="text-[#574ff2] hover:underline"
                 >
                   learning space
                 </a>{" "}
@@ -42,19 +63,19 @@ export default function Homepage() {
         </section>
         {/* Co-Learning Spaces */}
         <section id="learning-space" className="relative px-4 scroll-mt-16">
-          <h2 className="text-xl font-semibold mb-6 text-center pb-5 pt-10">
+          <h2 className="text-4xl font-semibold mb-6 text-center py-10">
             Co-Learning Spaces
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
             {spaces.map((space) => (
               <Card
-                key={space.id}
-                id={space.id}
-                thumbnail={space.thumbnail}
-                title={space.title}
-                members={space.members}
-                lastUpdate={space.lastUpdate}
+                key={space.learning_space_id}
+                id={space.learning_space_id}
+                thumbnail={space.space_photo_url}
+                title={space.space_title}
+                members={space.member_count}
+                lastUpdate={formatDate(space.last_updated_at)}
               />
             ))}
           </div>

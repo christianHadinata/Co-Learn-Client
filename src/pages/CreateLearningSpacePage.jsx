@@ -24,6 +24,7 @@ export default function CreateLearningSpace() {
     description: "",
     prerequisites: [],
   });
+  const [isLoading, setIsLoading] = useState(true);
   const [thumbnail, setThumbnail] = useState(null);
   const [spacePhotoFile, setSpacePhotoFile] = useState("");
 
@@ -35,8 +36,10 @@ export default function CreateLearningSpace() {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
+    } else {
+      setIsLoading(false);
     }
-  });
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -109,6 +112,14 @@ export default function CreateLearningSpace() {
       }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100 p-8">

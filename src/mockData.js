@@ -49,7 +49,7 @@ export const mockPosts = [
     spaceId: 1,
     title: "JSX & Components",
     author: "Alice",
-    date: "2025-09-01",
+    date: "2025-09-10",
     content: "Penjelasan dasar JSX dan cara membuat komponen.",
   },
   {
@@ -65,7 +65,7 @@ export const mockPosts = [
     spaceId: 2,
     title: "Closures Explained",
     author: "Jane",
-    date: "2025-09-10",
+    date: "2025-09-01",
     content: "Mendalami konsep closure di JavaScript.",
   },
 ];
