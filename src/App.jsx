@@ -3,12 +3,13 @@ import { ToastContainer } from "react-toastify";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MainLayout from "./components/MainLayout";
-import Homepage from "./pages/Homepage";
+import Homepage from "./pages/HomePage";
 import Profile from "./pages/ProfilePage";
 import NewLearningSpace from "./pages/CreateLearningSpacePage";
+import ViewSpace from "./pages/ViewSpace";
+
 
 import { UserProvider } from "./context/UserContext";
-
 export default function App() {
   return (
     <UserProvider>
@@ -25,8 +26,10 @@ export default function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="profile" element={<Profile />} />
             <Route path="create-new-learning-space" element={<NewLearningSpace />} />
+            <Route path="space/:id" element={<ViewSpace />} />
           </Route>
 
+          {/* ini harusnya ganti ke / aja gasih jgn login? */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
         <ToastContainer position="top-center" />

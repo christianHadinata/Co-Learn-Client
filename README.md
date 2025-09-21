@@ -4,5 +4,5 @@ stripe
 
 warna :
 #06CDFF //blue
-#E1ACFF //green
-#ACFFB7 //purple
+#E1ACFF //purple
+#ACFFB7 //green
