@@ -7,6 +7,7 @@ import Homepage from "./pages/Homepage";
 import Profile from "./pages/ProfilePage";
 import NewLearningSpace from "./pages/CreateLearningSpacePage";
 import ViewSpace from "./pages/ViewSpace";
+import ViewProfileDetail from "./pages/ProfileDetailPage";
 
 import { UserProvider } from "./context/UserContext";
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
               element={<NewLearningSpace />}
             />
             <Route path="space/:id" element={<ViewSpace />} />
+            <Route path="view-profile" element={<ViewProfileDetail />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
