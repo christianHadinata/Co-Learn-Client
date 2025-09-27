@@ -31,7 +31,7 @@ export default function App() {
               element={<NewLearningSpace />}
             />
             <Route path="space/:id" element={<ViewSpace />} />
-            <Route path="space/:id/post/:new" element={<CreatePost />} />
+            <Route path="space/:id/post/new" element={<CreatePost />} />
             <Route path="space/:id/post/:postId" element={<ViewPost />} />
           </Route>
 

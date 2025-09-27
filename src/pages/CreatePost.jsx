@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import bgImage from "../assets/bg-more.png";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/User";
 import { mockSpaces, mockPosts } from "../mockData";
@@ -106,51 +107,55 @@ export default function createPost() {
   };
 
   return (
-    <div className="flex flex-col w-full justify-start bg-gray-100 min-h-screen">
-      <div className="flex flex-col md:flex-row p-6 bg-gray-100 gap-6 mt-16 pb-2 mb-2 min ">
-        {/* Panel Editor */}
-        <div className="flex-1 flex flex-col bg-white rounded-lg shadow-md p-6 min-h-[calc(100vh*9/12)] ">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Title</h2>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border-b border-gray-300 mb-6 pb-2 focus:outline-none focus:border-blue-500"
-            placeholder="Post Title"
-          />
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Body</h2>
-          <div className="flex-1" data-color-mode="light">
-            <MDEditor
-              value={markdownValue}
-              onChange={setMarkdownValue}
-              preview="edit"
+    <div className="bg-center" style={{ backgroundImage: `url(${bgImage})` }}>
+      <div className="flex flex-col w-full justify-start min-h-screen">
+        <div className="flex flex-col md:flex-row p-6  gap-6 mt-16 pb-2 mb-2 min ">
+          {/* Panel Editor */}
+          <div className="flex-1 flex flex-col  bg-[#f8fafb70] rounded-lg shadow-lg p-6 min-h-[calc(100vh*9/12)] ">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Title</h2>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full border-b border-gray-300 mb-6 pb-2 focus:outline-none focus:border-blue-500"
+              placeholder="Post Title"
             />
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Body</h2>
+            <div className="flex-1" data-color-mode="light">
+              <MDEditor
+                value={markdownValue}
+                onChange={setMarkdownValue}
+                preview="edit"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Panel Pratinjau */}
-        <div
-          className="flex-1 flex flex-col bg-white rounded-lg shadow-md p-6  h-[calc(100vh*9/12)] "
-          data-color-mode="light"
-        >
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Preview:</h2>
-          <div className="overflow-y-auto">
-            <MDEditor.Markdown
-              source={markdownValue}
-              style={{ whiteSpace: "pre-wrap" }}
-            />
+          {/* Panel Pratinjau */}
+          <div
+            className="flex-1 flex flex-col   bg-[#fcfeff]  rounded-lg shadow-lg p-6  h-[calc(100vh*9/12)] "
+            data-color-mode="light"
+          >
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">
+              Preview:
+            </h2>
+            <div className="overflow-y-auto">
+              <MDEditor.Markdown
+                source={markdownValue}
+                style={{ whiteSpace: "pre-wrap" }}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex flex-col items-center gap-2 p-2 bg-gray-100">
-        {error && <p className="text-red-500">{error}</p>}
-        <button
-          className="cursor-pointer px-4 py-2  bg-[#574ff2] text-white rounded-lg hover:bg-[#3731ab]"
-          type="button"
-          onClick={handleCreatePost}
-        >
-          Create Post
-        </button>
+        <div className="flex flex-col items-center gap-2 p-2">
+          {error && <p className="text-red-500">{error}</p>}
+          <button
+            className="cursor-pointer px-4 py-2  bg-[#574ff2] text-white rounded-lg hover:bg-[#3731ab]"
+            type="button"
+            onClick={handleCreatePost}
+          >
+            Create Post
+          </button>
+        </div>
       </div>
     </div>
   );
