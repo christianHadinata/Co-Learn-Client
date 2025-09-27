@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { UserContext } from "../context/User";
+import bgImage from "../assets/bg-more.png";
 import Card from "../components/Card";
 import { mockSpaces, mockPosts } from "../mockData";
 
