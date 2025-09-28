@@ -25,6 +25,7 @@ export default function ViewSpace() {
         );
 
         const data = result.data.data;
+        console.log(data);
 
         setSpace(data);
       } catch (error) {
@@ -148,8 +149,8 @@ export default function ViewSpace() {
         {/* Active users */}
         <div className="md:col-span-1 space-y-8 min-h-[150px]">
           <h3 className="font-semibold mb-4">Active Users</h3>
-          {mockSpaces[0].activeUsers.length > 0 ? (
-            <ActiveUsersList users={mockSpaces[0].activeUsers} />
+          {space.activeUsers.length > 0 ? (
+            <ActiveUsersList users={space.activeUsers} />
           ) : (
             <div className="text-gray-500 flex  h-full">
               No active users yet.

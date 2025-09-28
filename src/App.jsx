@@ -34,7 +34,10 @@ export default function App() {
             <Route path="space/:id" element={<ViewSpace />} />
             <Route path="space/:id/post/new" element={<CreatePost />} />
             <Route path="space/:id/post/:postId" element={<ViewPost />} />
-            <Route path="view-profile" element={<ViewProfileDetail />} />
+            <Route
+              path="view-profile/:user_id"
+              element={<ViewProfileDetail />}
+            />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />

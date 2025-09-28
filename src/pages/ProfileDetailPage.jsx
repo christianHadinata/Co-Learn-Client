@@ -1,19 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { WithContext as ReactTags } from "react-tag-input";
-// import userIcon from "../assets/icon.jpg";
+import { useEffect, useState } from "react";
 import { AxiosInstance } from "../utils/axiosInstance";
-import { toast } from "react-toastify";
-import { UserContext } from "../context/User";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import React from "react";
 import "./style.css";
-
-const KeyCodes = {
-  comma: 188,
-  enter: 13,
-};
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 export default function Profile() {
   const [profile, setProfile] = useState({
@@ -25,19 +14,14 @@ export default function Profile() {
 
   const [profilePhotoUrl, setProfilePhotoUrl] = useState("");
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      navigate("/login");
-    }
-  });
+  const { user_id } = useParams();
 
   useEffect(() => {
     const fetchProfile = async () => {
       const { data } = await AxiosInstance.get(
-        `http://localhost:5000/api/v1/users/`
+        `http://localhost:5000/api/v1/users/view_user_profile/${user_id}`
       );
+      console.log(data);
 
       const {
         user_name,
@@ -126,4 +110,3 @@ export default function Profile() {
     </React.Fragment>
   );
 }
-              
