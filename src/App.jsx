@@ -7,6 +7,7 @@ import Homepage from "./pages/Homepage";
 import Profile from "./pages/ProfilePage";
 import NewLearningSpace from "./pages/CreateLearningSpacePage";
 import ViewSpace from "./pages/ViewSpace";
+import ViewProfileDetail from "./pages/ProfileDetailPage";
 import ViewPost from "./pages/ViewPost";
 import CreatePost from "./pages/CreatePost";
 
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="space/:id" element={<ViewSpace />} />
             <Route path="space/:id/post/new" element={<CreatePost />} />
             <Route path="space/:id/post/:postId" element={<ViewPost />} />
+            <Route path="view-profile" element={<ViewProfileDetail />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
