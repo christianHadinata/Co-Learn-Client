@@ -8,6 +8,8 @@ import Profile from "./pages/ProfilePage";
 import NewLearningSpace from "./pages/CreateLearningSpacePage";
 import ViewSpace from "./pages/ViewSpace";
 import ViewProfileDetail from "./pages/ProfileDetailPage";
+import ViewPost from "./pages/ViewPost";
+import CreatePost from "./pages/CreatePost";
 
 import { UserProvider } from "./context/UserContext";
 export default function App() {
@@ -30,6 +32,8 @@ export default function App() {
               element={<NewLearningSpace />}
             />
             <Route path="space/:id" element={<ViewSpace />} />
+            <Route path="space/:id/post/new" element={<CreatePost />} />
+            <Route path="space/:id/post/:postId" element={<ViewPost />} />
             <Route path="view-profile" element={<ViewProfileDetail />} />
           </Route>
 

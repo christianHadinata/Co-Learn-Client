@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { UserContext } from "../context/User";
+import bgImage from "../assets/bg-more.png";
 import Card from "../components/Card";
 import { mockSpaces, mockPosts } from "../mockData";
 
@@ -163,9 +164,11 @@ export default function ViewSpace() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold">Posts</h3>
                 {!!user && (
-                  <button className="cursor-pointer px-4 py-2  bg-[#574ff2] text-white rounded-lg hover:bg-[#3731ab]">
-                    + New Post
-                  </button>
+                  <Link to={`/space/${id}/post/new`}>
+                    <button className="cursor-pointer px-4 py-2  bg-[#574ff2] text-white rounded-lg hover:bg-[#3731ab]">
+                      + New Post
+                    </button>
+                  </Link>
                 )}
               </div>
               <PostsList posts={mockPosts} />
