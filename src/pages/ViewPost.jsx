@@ -5,30 +5,59 @@ import { useParams, Link } from "react-router-dom";
 import { mockPosts, mockSpaces } from "../mockData";
 import MDEditor from "@uiw/react-md-editor";
 import { formatDate } from "../utils/formatDate";
+import { AxiosInstance } from "../utils/axiosInstance";
 
 export default function ViewPost() {
-  const { id } = useParams(); // postId
+  const { id, postId } = useParams();
   const [post, setPost] = useState(null);
   const [space, setSpace] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [userVote, setUserVote] = useState(null); // "up", "down", or null
   const [upvotes, setUpvotes] = useState(0);
   const [downvotes, setDownvotes] = useState(0);
 
   useEffect(() => {
-    // 1. Find the post by id
-    const foundPost = mockPosts.find((p) => p.id === Number(id));
-    setPost(foundPost);
+    const fetchDetailPostAndSpace = async () => {
+      try {
+        const postResult = await AxiosInstance.get(
+          `http://localhost:5000/api/v1/posts/get_post/${postId}`
+        );
 
-    // 2. Find the space this post belongs to
-    if (foundPost) {
-      const foundSpace = mockSpaces.find((s) => s.id === foundPost.spaceId);
-      setSpace(foundSpace);
-      setUpvotes(foundPost.upvotes || 0);
-      setDownvotes(foundPost.downvotes || 0);
-    }
-  }, [id]);
+        const postData = postResult.data.data;
+        console.log(postData);
 
-  if (!post) return <div className="p-10">Post not found</div>;
+        const spaceResult = await AxiosInstance.get(
+          `http://localhost:5000/api/v1/spaces/${id}`
+        );
+
+        const spaceData = spaceResult.data.data;
+        console.log(spaceData);
+
+        if (postData && spaceData) {
+          setPost(postData);
+          setSpace(spaceData);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDetailPostAndSpace();
+  }, [id, postId]);
+
+  if (isLoading) return <div className="p-10">Loading...</div>;
+  if (!isLoading && (!post || !space))
+    return (
+      <div className="h-screen flex flex-col gap-y-4 justify-center items-center font-semibold ">
+        <div className="text-3xl">Post in space doesn't exist</div>
+        <Link to={"/"} className="text-2xl text-[#574ff2] underline">
+          Back to home
+        </Link>
+      </div>
+    );
+
   const handleUpvote = () => {
     if (userVote === "up") {
       // remove upvote
@@ -65,19 +94,18 @@ export default function ViewPost() {
             <p className="text-gray-900 text-m  mb-4">
               <span className="px-2 py-1 mt-0 bg-white text-gray-900 rounded-md">
                 From Learning Space:{" "}
-                <Link to={`/space/${space?.id}`}>
+                <Link to={`/space/${space?.learning_space_id}`}>
                   <span className="text-[#574ff2] hover:underline font-medium">
-                    {space?.title}
+                    {space?.space_title}
                   </span>
                 </Link>
               </span>
             </p>
             <h1 className="text-3xl font-bold text-gray-900 mt-4 mb-2">
-              {post.title}
+              {post.post_title}
             </h1>
             <p className="text-gray-600 text-sm">
-              by {post.author}, {formatDate(post.date)}{" "}
-              {/* uses your date formatter */}
+              by {post.user_name}, {formatDate(post.created_at)}{" "}
             </p>
           </div>
           <button className="px-4 py-2 border bg-blue-100 border-gray-400 rounded-lg text-gray-700 hover:bg-blue-300 cursor-pointer">
@@ -117,7 +145,7 @@ export default function ViewPost() {
         <div className="bg-white p-6 mb-0">
           <div className="prose max-w-none" data-color-mode="light">
             <MDEditor.Markdown
-              source={post.content}
+              source={post.post_body}
               style={{ whiteSpace: "pre-wrap", backgroundColor: "transparent" }}
             />
           </div>

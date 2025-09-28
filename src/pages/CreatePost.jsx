@@ -1,62 +1,54 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import bgImage from "../assets/bg-more.png";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../context/User";
-import { mockSpaces, mockPosts } from "../mockData";
 import MDEditor from "@uiw/react-md-editor";
-export default function createPost() {
+import { AxiosInstance } from "../utils/axiosInstance";
+export default function CreatePost() {
   const { id } = useParams();
-  const { user } = useContext(UserContext);
   const [space, setSpace] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [markdownValue, setMarkdownValue] = useState();
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
-    //     const fetchDetailSpaceData = async () => {
-    //       try {
-    //         const result = await AxiosInstance.get(
-    //           `http://localhost:5000/api/v1/spaces/${id}`
-    //         );
-
-    //         const data = result.data.data;
-
-    //         setSpace(data);
-    //       } catch (error) {
-    //         console.log(error);
-    //       }
-    //     };
-
-    //     const fetchRelatedSpaceData = async () => {
-    //       try {
-    //         const result = await AxiosInstance.get(
-    //           `http://localhost:5000/api/v1/spaces/related/${id}`
-    //         );
-
-    //         const data = result.data.data;
-
-    //         console.log(data);
-    //         setRelatedSpaces(data);
-    //       } catch (error) {
-    //         console.log(error);
-    //       }
-    //     };
-    const found = mockSpaces.find((s) => s.id === Number(id)); //cari space di mock
-    if (found) {
-      //masukin isinya
-      const posts = mockPosts.filter((p) => p.spaceId === found.id);
-      setSpace({ ...found, posts });
-    } else {
-      setSpace(null);
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
     }
 
-    // fetchDetailSpaceData();
-    // fetchRelatedSpaceData();
+    const fetchDetailSpaceData = async () => {
+      try {
+        const result = await AxiosInstance.get(
+          `http://localhost:5000/api/v1/spaces/${id}`
+        );
+
+        const data = result.data.data;
+        console.log(data);
+
+        setSpace(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDetailSpaceData();
   }, [id]);
 
-  if (!space) return <div className="p-10">Loading…</div>; //biar tunggu space terisi dulu (fetch data & udh ga null) sebelum page dirender
+  if (isLoading) return <div className="p-10">Loading…</div>; //biar tunggu space terisi dulu (fetch data & udh ga null) sebelum page dirender
+  if (!isLoading && !space)
+    return (
+      <div className="h-screen flex flex-col gap-y-4 justify-center items-center font-semibold ">
+        <div className="text-3xl">Learning Space doesn't exist</div>
+        <Link to={"/"} className="text-2xl text-[#574ff2] underline">
+          Back to home
+        </Link>
+      </div>
+    );
 
-  const handleCreatePost = () => {
+  const handleCreatePost = async () => {
     if (!title && !markdownValue) {
       setError("Please enter post title and body");
       return;
@@ -69,41 +61,32 @@ export default function createPost() {
     }
     setError("");
 
-    // 1. buat id post
-    const newId = mockPosts.length
-      ? Math.max(...mockPosts.map((p) => p.id)) + 1
-      : 1;
+    console.log(title);
+    console.log(markdownValue);
 
-    // 2.buat objek post
-    const newPost = {
-      id: newId,
-      spaceId: space.id,
-      title: title,
-      author: user.name,
-      date: new Date().toISOString().split("T")[0], // YYYY-MM-DD
-      content: markdownValue,
-    };
+    try {
+      const { data } = await AxiosInstance.post(
+        `http://localhost:5000/api/v1/posts/create_post/${id}`,
+        {
+          post_title: title,
+          post_body: markdownValue,
+        }
+      );
 
-    // 3. masukkan ke mock
-    mockPosts.push(newPost);
+      console.log(data);
 
-    // 4. update id post di space
-    const spaceIndex = mockSpaces.findIndex((s) => s.id === space.id);
-    if (spaceIndex !== -1) {
-      mockSpaces[spaceIndex].posts.push(newId);
+      if (data.success === true) {
+        setTitle("");
+        setMarkdownValue("");
+        navigate(`/space/${id}`, {
+          state: {
+            successMessage: "Success! Post Successfully Created",
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
-
-    // 5. update local state so React re-renders
-    setSpace((prev) => ({
-      ...prev,
-      posts: [...prev.posts, newPost],
-    }));
-
-    // clear editor
-    setTitle("");
-    setMarkdownValue("");
-    alert("Post created!");
-    navigate(`/space/${id}`);
   };
 
   return (
@@ -126,6 +109,7 @@ export default function createPost() {
                 value={markdownValue}
                 onChange={setMarkdownValue}
                 preview="edit"
+                height={500}
               />
             </div>
           </div>
