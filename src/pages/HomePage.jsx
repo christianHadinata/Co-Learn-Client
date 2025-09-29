@@ -22,7 +22,16 @@ export default function Homepage() {
         const data = result.data.data;
 
         if (data) {
-          setSpaces(data);
+          const sortedData = [...data].sort((a, b) => {
+            // sort berdasarkan tanggal last update at descending
+            const dateA = new Date(a.last_updated_at);
+            const dateB = new Date(b.last_updated_at);
+
+            return dateB.getTime() - dateA.getTime();
+          });
+
+          setSpaces(sortedData);
+          // setSpaces(data);
         }
 
         console.log(data);
