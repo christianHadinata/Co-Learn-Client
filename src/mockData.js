@@ -69,3 +69,42 @@ export const mockPosts = [
     content: "Mendalami konsep closure di JavaScript.",
   },
 ];
+
+export const mockComments = [
+  {
+    id: 1,
+    postId: 1,
+    user_name: "Charlie",
+    content: "Nice explanation! JSX awalnya memang agak membingungkan.",
+    created_at: "2025-09-11T10:30:00Z",
+    upvotes: 2,
+    downvotes: 0,
+  },
+  {
+    id: 2,
+    postId: 1,
+    user_name: "Bob",
+    content: "Aku lebih suka contoh yang pakai functional component.",
+    created_at: "2025-09-11T12:00:00Z",
+    upvotes: 1,
+    downvotes: 0,
+  },
+  {
+    id: 3,
+    postId: 2,
+    user_name: "Alice",
+    content: "useState itu powerful banget kalau dipadukan sama useEffect.",
+    created_at: "2025-09-06T09:45:00Z",
+    upvotes: 3,
+    downvotes: 0,
+  },
+  {
+    id: 4,
+    postId: 3,
+    user_name: "Tom",
+    content: "Closure bikin pusing waktu awal belajar, tapi sangat berguna!",
+    created_at: "2025-09-02T15:20:00Z",
+    upvotes: 4,
+    downvotes: 1,
+  },
+];
