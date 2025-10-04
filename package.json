@@ -13,6 +13,8 @@
     "@tailwindcss/vite": "^4.1.13",
     "@uiw/react-md-editor": "^4.0.8",
     "axios": "^1.12.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.3",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
     "react": "^19.1.1",
