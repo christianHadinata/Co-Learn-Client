@@ -1,11 +1,14 @@
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import bgImage from "../assets/bg-more.png";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { mockPosts, mockSpaces } from "../mockData";
 import MDEditor from "@uiw/react-md-editor";
 import { formatDate } from "../utils/formatDate";
 import { AxiosInstance } from "../utils/axiosInstance";
+
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function ViewPost() {
   const { id, postId } = useParams();
@@ -15,6 +18,7 @@ export default function ViewPost() {
   const [userVote, setUserVote] = useState(null); // "up", "down", or null
   const [upvotes, setUpvotes] = useState(0);
   const [downvotes, setDownvotes] = useState(0);
+  const postContentRef = useRef();
 
   useEffect(() => {
     const fetchDetailPostAndSpace = async () => {
@@ -57,6 +61,78 @@ export default function ViewPost() {
         </Link>
       </div>
     );
+  const handleSavePDF = async () => {
+    if (!postContentRef.current) return;
+
+    //  pastiin consistent zoom and scroll position
+    window.scrollTo(0, 0);
+
+    const input = postContentRef.current;
+
+    // generate canvas from post content
+    const canvas = await html2canvas(input, {
+      scale: 2 / window.devicePixelRatio, // normalize zoom
+      useCORS: true,
+      logging: false,
+    });
+
+    // use jpg buat type imagenya
+    const imgData = canvas.toDataURL("image/jpeg", 0.85);
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    // custom header (title post and space, creator, date)
+    //!!!!!!!!!!!kalau mau hapus sok aja
+    //start header
+    const marginX = 10;
+    const marginTop = 20;
+    const lineHeight = 8;
+    let currentY = marginTop;
+
+    const title = `Post "${post?.post_title || "Untitled"}"`;
+    const subtitle = `from Space "${space?.space_title || "Unknown Space"}"`;
+    const authorLine = `by ${post?.user_name || "Anonymous"} (${
+      formatDate(post?.created_at) || "Unknown Date"
+    })`;
+
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+    pdf.text(title, marginX, currentY);
+    currentY += lineHeight;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+    pdf.text(subtitle, marginX, currentY);
+    currentY += lineHeight;
+
+    pdf.setFontSize(11);
+    pdf.text(authorLine, marginX, currentY);
+    currentY += 6;
+
+    // hr pembatas title dan content
+    pdf.setDrawColor(150, 150, 150); // light gray
+    pdf.setLineWidth(0.3);
+    pdf.line(marginX, currentY, pdfWidth - marginX, currentY);
+    //end header
+
+    const contentX = 10; // same as margin
+    const contentWidth = pdfWidth - contentX * 2; // avoid cutting sides
+
+    pdf.addImage(
+      imgData,
+      "JPEG",
+      contentX,
+      currentY,
+      contentWidth,
+      pdfHeight,
+      "",
+      "FAST"
+    );
+
+    pdf.save(`${post?.post_title || "post"}.pdf`);
+  };
 
   const handleUpvote = () => {
     if (userVote === "up") {
@@ -108,7 +184,10 @@ export default function ViewPost() {
               by {post.user_name}, {formatDate(post.created_at)}{" "}
             </p>
           </div>
-          <button className="px-4 py-2 border bg-blue-100 border-gray-400 rounded-lg text-gray-700 hover:bg-blue-300 cursor-pointer">
+          <button
+            onClick={handleSavePDF}
+            className="px-4 py-2 border bg-blue-100 border-gray-400 rounded-lg text-gray-700 hover:bg-blue-300 cursor-pointer"
+          >
             Save as PDF
           </button>
         </div>
@@ -142,7 +221,7 @@ export default function ViewPost() {
         </div>
         <hr className="my-6 mb-0" />
 
-        <div className="bg-white p-6 mb-0">
+        <div ref={postContentRef} className="bg-white p-6 mb-0">
           <div className="prose max-w-none" data-color-mode="light">
             <MDEditor.Markdown
               source={post.post_body}
