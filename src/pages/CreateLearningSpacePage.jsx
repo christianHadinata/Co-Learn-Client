@@ -102,6 +102,7 @@ export default function CreateLearningSpace() {
         setSpacePhotoFile("");
         setFileInputKey(Date.now());
         toast.success("Success! Learning Space Created");
+        navigate("/", { state: { scrollTo: "learning-space" } });
       }
     } catch (error) {
       console.log(error);

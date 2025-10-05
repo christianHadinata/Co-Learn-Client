@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import Card from "../components/Card";
 import { UserContext } from "../context/User";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // import { mockSpaces } from "../mockData";
 import bgImage from "../assets/bg-more.png";
 // import bgImage2 from "../assets/bg-less.png";
@@ -11,7 +11,18 @@ import { formatDate } from "../utils/formatDate";
 export default function Homepage() {
   const { user } = useContext(UserContext);
   const [spaces, setSpaces] = useState([]);
+  const location = useLocation();
 
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const el = document.getElementById(location.state.scrollTo);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+      // optional: clear state so it won't scroll again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
   useEffect(() => {
     const fetchAllSpacesData = async () => {
       try {
