@@ -6,6 +6,7 @@ import { mockPosts, mockSpaces } from "../mockData";
 import MDEditor from "@uiw/react-md-editor";
 import { formatDate } from "../utils/formatDate";
 import { AxiosInstance } from "../utils/axiosInstance";
+import CommentSection from "./CommentSection";
 
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -234,8 +235,7 @@ export default function ViewPost() {
 
         {/* Comments Section */}
         <div>
-          <h2 className="text-xl font-semibold mb-2">Comments</h2>
-          <p className="text-gray-600">Placeholder for comments…</p>
+          <CommentSection />
         </div>
       </div>
     </div>
