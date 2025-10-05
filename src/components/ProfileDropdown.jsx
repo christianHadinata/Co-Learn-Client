@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 
 import { UserContext } from "../context/User";
 import { Link } from "react-router-dom";
+import defaultProfileImage from "../assets/default-profile.jpg";
+import editProfileImage from "../assets/edit-profile.png";
+import logoutImage from "../assets/logout.png";
 
 export default function ProfileDropDown() {
   const { user, logoutUser } = useContext(UserContext);
@@ -13,7 +16,7 @@ export default function ProfileDropDown() {
           src={
             user.user_photo_url
               ? `http://localhost:5000/${user.user_photo_url}`
-              : "../src/assets/default-profile.jpg"
+              : defaultProfileImage
           }
           width={35}
           height={35}
@@ -35,11 +38,7 @@ export default function ProfileDropDown() {
         <div className="flex flex-col gap-2">
           <div className="w-full p-2 hover:bg-slate-100 rounded-lg">
             <Link to="/profile" className="flex items-center gap-2 text-sm ">
-              <img
-                src="../src/assets/edit-profile.png"
-                alt=""
-                className="w-5 h-5"
-              />
+              <img src={editProfileImage} alt="" className="w-5 h-5" />
               Edit Profile
             </Link>
           </div>
@@ -49,7 +48,7 @@ export default function ProfileDropDown() {
               className="flex items-center gap-2 text-sm "
               onClick={logoutUser}
             >
-              <img src="../src/assets/logout.png" alt="" className="w-5 h-5" />
+              <img src={logoutImage} alt="" className="w-5 h-5" />
               Log out
             </Link>
           </div>

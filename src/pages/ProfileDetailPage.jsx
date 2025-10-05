@@ -3,6 +3,7 @@ import { AxiosInstance } from "../utils/axiosInstance";
 import { useParams } from "react-router-dom";
 import React from "react";
 import "./style.css";
+import defaultProfileImage from "../assets/default-profile.jpg";
 
 export default function Profile() {
   const [profile, setProfile] = useState({
@@ -76,7 +77,7 @@ export default function Profile() {
                   src={
                     profilePhotoUrl
                       ? `http://localhost:5000/${profilePhotoUrl}`
-                      : "../src/assets/default-profile.jpg"
+                      : defaultProfileImage
                   }
                   alt="User"
                   className="w-20 h-20 rounded-full border-2 border-gray-200 object-cover"

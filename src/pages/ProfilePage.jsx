@@ -7,6 +7,8 @@ import { UserContext } from "../context/User";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import "./style.css";
+import defaultProfileImage from "../assets/default-profile.jpg";
+import pencilEditImage from "../assets/pencil-edit.png";
 
 const KeyCodes = {
   comma: 188,
@@ -178,14 +180,14 @@ export default function Profile() {
                   src={
                     profilePhotoUrl
                       ? `http://localhost:5000/${profilePhotoUrl}`
-                      : "../src/assets/default-profile.jpg"
+                      : defaultProfileImage
                   }
                   alt="User"
                   className="w-20 h-20 rounded-full border-2 border-gray-200 object-cover"
                 />
                 {/* Ikon Pensil */}
                 <img
-                  src="../src/assets/pencil-edit.png"
+                  src={pencilEditImage}
                   alt="Edit Profile"
                   className="absolute bottom-0 right-0 z-20 h-6 w-6"
                 />

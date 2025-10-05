@@ -1,6 +1,6 @@
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import bgImage from "../assets/bg-more.png";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { mockPosts, mockSpaces } from "../mockData";
 import MDEditor from "@uiw/react-md-editor";
@@ -10,15 +10,18 @@ import CommentSection from "./CommentSection";
 
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { UserContext } from "../context/User";
+import { toast } from "react-toastify";
 
 export default function ViewPost() {
   const { id, postId } = useParams();
   const [post, setPost] = useState(null);
   const [space, setSpace] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [userVote, setUserVote] = useState(null); // "up", "down", or null
+  const [userVote, setUserVote] = useState(null);
   const [upvotes, setUpvotes] = useState(0);
   const [downvotes, setDownvotes] = useState(0);
+  const { user } = useContext(UserContext);
   const postContentRef = useRef();
 
   useEffect(() => {
@@ -41,6 +44,9 @@ export default function ViewPost() {
         if (postData && spaceData) {
           setPost(postData);
           setSpace(spaceData);
+          setUpvotes(parseInt(postData.upvote_count) || 0);
+          setDownvotes(parseInt(postData.downvote_count) || 0);
+          setUserVote(postData.current_user_vote_type || null);
         }
       } catch (error) {
         console.log(error);
@@ -50,7 +56,7 @@ export default function ViewPost() {
     };
 
     fetchDetailPostAndSpace();
-  }, [id, postId]);
+  }, [id, postId, user]);
 
   if (isLoading) return <div className="p-10">Loading...</div>;
   if (!isLoading && (!post || !space))
@@ -135,33 +141,70 @@ export default function ViewPost() {
     pdf.save(`${post?.post_title || "post"}.pdf`);
   };
 
-  const handleUpvote = () => {
-    if (userVote === "up") {
-      // remove upvote
-      setUpvotes((u) => u - 1);
-      setUserVote(null);
-    } else {
-      setUpvotes((u) => u + 1);
-      if (userVote === "down") {
-        setDownvotes((d) => d - 1);
+  const handleVote = async (new_vote_type) => {
+    if (!user) {
+      toast.error("Login required to vote on posts.");
+      return;
+    }
+
+    try {
+      const { data } = await AxiosInstance.post(
+        `http://localhost:5000/api/v1/posts/vote_post/${postId}`,
+        {
+          vote_type: new_vote_type,
+        }
+      );
+      console.log(data);
+
+      if (data.success === true) {
+        const prevVoteType = userVote;
+        let newUpvotes = upvotes;
+        let newDownvotes = downvotes;
+        let nextVoteType = null;
+
+        // kalau sama, berarti mencabut vote
+        if (prevVoteType === new_vote_type) {
+          if (new_vote_type === "upvote") {
+            newUpvotes--;
+          }
+          if (new_vote_type === "downvote") {
+            newDownvotes--;
+          }
+          // hapus jenis vote
+          nextVoteType = null;
+
+          // selain itu, maka ubah jenis vote, misal upvote jd downvote, atau downvote jd upvote
+        } else {
+          // kurangi count di vote yg lama
+          if (prevVoteType === "upvote") {
+            newUpvotes--;
+          }
+          if (prevVoteType === "downvote") {
+            newDownvotes--;
+          }
+
+          // Tambahkan vote baru
+          if (new_vote_type === "upvote") {
+            newUpvotes++;
+          }
+          if (new_vote_type === "downvote") {
+            newDownvotes++;
+          }
+
+          // ganti jenis vote
+          nextVoteType = new_vote_type;
+        }
+
+        setUpvotes(newUpvotes);
+        setDownvotes(newDownvotes);
+        setUserVote(nextVoteType);
       }
-      setUserVote("up");
+    } catch (err) {
+      console.error("Gagal melakukan voting:", err);
+      toast.error("Failed to Vote. Try Again!");
     }
   };
 
-  const handleDownvote = () => {
-    if (userVote === "down") {
-      // remove downvote
-      setDownvotes((d) => d - 1);
-      setUserVote(null);
-    } else {
-      setDownvotes((d) => d + 1);
-      if (userVote === "up") {
-        setUpvotes((u) => u - 1);
-      }
-      setUserVote("down");
-    }
-  };
   return (
     <div className="" style={{ backgroundImage: `url(${bgImage})` }}>
       <div className="max-w-[94vw] mx-auto p-6 space-y-10 pt-[6rem] min-h-screen">
@@ -187,7 +230,7 @@ export default function ViewPost() {
           </div>
           <button
             onClick={handleSavePDF}
-            className="px-4 py-2 border bg-blue-100 border-gray-400 rounded-lg text-gray-700 hover:bg-blue-300 cursor-pointer"
+            className="px-4 py-2 bg-[#574ff2] text-white rounded-md hover:bg-[#463ce6] cursor-pointer"
           >
             Save as PDF
           </button>
@@ -196,9 +239,9 @@ export default function ViewPost() {
         <div className="flex items-center gap-6 my-4 bg-white px-4 py-2 rounded-full w-fit">
           {/* Upvote */}
           <button
-            onClick={handleUpvote}
+            onClick={() => handleVote("upvote")}
             className={`flex items-center gap-1 transition cursor-pointer ${
-              userVote === "up"
+              userVote === "upvote"
                 ? "text-[#574ff2]"
                 : "text-gray-600 hover:text-[#574ff2]"
             }`}
@@ -209,9 +252,9 @@ export default function ViewPost() {
 
           {/* Downvote */}
           <button
-            onClick={handleDownvote}
+            onClick={() => handleVote("downvote")}
             className={`flex items-center gap-1 transition cursor-pointer ${
-              userVote === "down"
+              userVote === "downvote"
                 ? "text-red-500"
                 : "text-gray-600 hover:text-red-500"
             }`}
