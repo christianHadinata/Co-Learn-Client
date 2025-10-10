@@ -4,6 +4,9 @@ import { AxiosInstance } from "../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+import illust from "../assets/hero-illust.png";
+import bgimg from "../assets/widebg.png";
+
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -123,8 +126,11 @@ export default function CreateLearningSpace() {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100 p-8">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
+    <div
+      className="min-h-screen flex justify-center items-center  p-8 mt-8 bg-center gap-15"
+      style={{ backgroundImage: `url(${bgimg})` }}
+    >
+      <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-2xl ">
         <h2 className="text-xl font-bold mb-6 text-center">
           Create New Learning Space
         </h2>
@@ -229,6 +235,7 @@ export default function CreateLearningSpace() {
           Create Space
         </button>
       </div>
+      <img src={illust} />
     </div>
   );
 }
