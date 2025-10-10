@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { AxiosInstance } from "../utils/axiosInstance";
 import { UserContext } from "../context/User";
 import { jwtDecode } from "jwt-decode";
+import icon from "../assets/icon.png";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -89,18 +90,15 @@ export default function LoginPage() {
           {/* Back to Home */}
           <Link
             to="/"
-            className="text-sm absolute top-6 left-6 text-[#4F46E5] hover:underline self-start mb-4"
+            className="text-sm absolute top-6 left-6 text-[#4F46E5] self-start mb-4 flex flex-row"
           >
-            {"<"}Back to Home
+            {"<"}
+            <p className="hover:underline">Back to Home</p>
           </Link>
 
-          <div className="flex flex-col justify-center mx-auto items-center gap-3 pb-4">
+          <div className="flex flex-col justify-center mx-auto items-center pb-4">
             <div>
-              <img
-                src="https://i.pinimg.com/736x/55/e7/f3/55e7f3d50ec02281323bf2aac8b1ed46.jpg"
-                width="50"
-                alt="Logo"
-              />
+              <img src={icon} className="h-20" alt="Logo" />
             </div>
             <h1 className="text-3xl font-bold  text-[#4B5563] my-auto">
               Log In
