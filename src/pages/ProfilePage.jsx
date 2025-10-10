@@ -9,6 +9,7 @@ import React from "react";
 import "./style.css";
 import defaultProfileImage from "../assets/default-profile.jpg";
 import pencilEditImage from "../assets/pencil-edit.png";
+import bgImage from "../assets/bg-more.png";
 
 const KeyCodes = {
   comma: 188,
@@ -168,7 +169,10 @@ export default function Profile() {
       </div>
 
       {/* profile card */}
-      <div className="absolute w-full min-h-screen flex justify-center items-center z-10">
+      <div
+        className="absolute w-full min-h-screen flex justify-center items-center z-10 bg-center"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
         <div className="bg-white/50 backdrop-blur-md rounded-xl shadow-xl p-8 w-96 relative z-10">
           <div className="flex justify-center mb-6">
             <div className="flex justify-center mb-6">
@@ -183,13 +187,13 @@ export default function Profile() {
                       : defaultProfileImage
                   }
                   alt="User"
-                  className="w-20 h-20 rounded-full border-2 border-gray-200 object-cover"
+                  className="w-30 h-30 rounded-full border-2 border-gray-200 object-cover"
                 />
                 {/* Ikon Pensil */}
                 <img
                   src={pencilEditImage}
                   alt="Edit Profile"
-                  className="absolute bottom-0 right-0 z-20 h-6 w-6"
+                  className="absolute bottom-0 right-0 z-20 h-7 w-7"
                 />
               </label>
               <input
