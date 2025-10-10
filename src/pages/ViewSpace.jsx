@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { UserContext } from "../context/User";
-import bgImage from "../assets/bg-more.png";
+import bgImage from "../assets/bg-less2.png";
 import Card from "../components/Card";
 import { mockSpaces, mockPosts } from "../mockData";
 
@@ -145,7 +145,10 @@ export default function ViewSpace() {
   if (!space) return <div className="p-10">Loading…</div>; //biar tunggu space terisi dulu (fetch data & udh ga null) sebelum page dirender
 
   return (
-    <main className="max-w-[92vw] mx-auto p-6 space-y-10 pt-[6rem]">
+    <main
+      className="max-w-[100vw] mx-auto  p-10 space-y-10 pt-[6rem] bg-center"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
       {/* Header */}
       <section className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4 ">
         <div>
