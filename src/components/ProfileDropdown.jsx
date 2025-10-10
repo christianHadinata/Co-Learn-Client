@@ -21,7 +21,7 @@ export default function ProfileDropDown() {
           width={35}
           height={35}
           alt="profile"
-          className="rounded-full"
+          className="w-10 h-10 rounded-full object-cover border border-gray-300 bg-white"
         />
       </div>
 
