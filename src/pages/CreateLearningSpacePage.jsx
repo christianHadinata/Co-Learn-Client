@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import illust from "../assets/hero-illust.png";
-import bgimg from "../assets/widebg.png";
+import bgimg from "../assets/bg-less.png";
 
 const KeyCodes = {
   comma: 188,
