@@ -6,6 +6,7 @@ import "./navbar.css";
 
 import { UserContext } from "../context/User";
 import ProfileDropDown from "./ProfileDropDown";
+import logo from "../assets/logo.png";
 
 function Navbar() {
   const { user } = useContext(UserContext);
@@ -16,7 +17,7 @@ function Navbar() {
           to="/"
           className="navbar-logo text-3xl font-bold text-[#4B5563] my-auto"
         >
-          Co-Learn
+          <img src={logo} className="h-11 m-1 ml-0" />
         </Link>
       </div>
 
