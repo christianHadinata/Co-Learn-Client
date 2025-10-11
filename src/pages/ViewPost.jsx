@@ -187,8 +187,8 @@ export default function ViewPost() {
 
         // highlight manual bungkus pake span, trs set bg yellow
         const highlightSpan = document.createElement("span");
-        highlightSpan.className =
-          "bg-yellow-300 rounded cursor-pointer annotation-highlight";
+        highlightSpan.style.backgroundColor = "rgb(253, 224, 71)";
+        highlightSpan.className = "rounded cursor-pointer annotation-highlight";
         highlightSpan.dataset.id = anno.annotation_id;
         highlightSpan.dataset.text = annotation_text || "(No comment)";
         highlightSpan.dataset.user = user_name || "Anonymous";
