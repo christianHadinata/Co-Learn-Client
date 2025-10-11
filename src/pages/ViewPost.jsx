@@ -12,6 +12,8 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { UserContext } from "../context/User";
 import { toast } from "react-toastify";
+import AnnotationModal from "../components/AnnotationModal";
+import AnnotationViewer from "../components/AnnotationViewer";
 
 export default function ViewPost() {
   const { id, postId } = useParams();
@@ -22,6 +24,33 @@ export default function ViewPost() {
   const [upvotes, setUpvotes] = useState(0);
   const [downvotes, setDownvotes] = useState(0);
   const { user } = useContext(UserContext);
+
+  const [annotations, setAnnotations] = useState([]);
+  const [showAnnotationModal, setShowAnnotationModal] = useState(false);
+
+  const [annotationIconPosition, setAnnotationIconPosition] = useState({
+    x: 0,
+    y: 0,
+    visible: false,
+  });
+
+  // nyimpen highlighted text sm posisinya
+  const [currentSelection, setCurrentSelection] = useState({
+    highlightedText: "",
+    startIndex: 0,
+    endIndex: 0,
+  });
+
+  // ini buat ngebuka pop up klo hover text yg udh di highlight
+  const [viewerAnnotation, setViewerAnnotation] = useState({
+    visible: false,
+    highlightedText: "",
+    annotationText: "", // ini buat nampung notes atau comment nya gt nnti
+    userName: "",
+    x: 0,
+    y: 0,
+  });
+
   const postContentRef = useRef();
 
   useEffect(() => {
@@ -55,8 +84,255 @@ export default function ViewPost() {
       }
     };
 
+    const fetchAnnotations = async () => {
+      if (!user || !postId) return;
+      try {
+        const result = await AxiosInstance.get(
+          `http://localhost:5000/api/v1/posts/annotations/${postId}`
+        );
+
+        console.log(result.data.data);
+
+        setAnnotations(result.data.data);
+      } catch (error) {
+        console.error("Failed to fetch annotations:", error);
+      }
+    };
+
     fetchDetailPostAndSpace();
+    fetchAnnotations();
   }, [id, postId, user]);
+
+  useEffect(() => {
+    if (!post || !postContentRef.current || annotations.length === 0) {
+      return;
+    }
+
+    const markdownOutput =
+      postContentRef.current.querySelector(".wmde-markdown") ||
+      postContentRef.current.querySelector(".prose");
+
+    console.log(markdownOutput);
+
+    if (!markdownOutput) return;
+
+    const getTextNodes = (root) => {
+      const nodes = [];
+      const treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let node;
+      while (treeWalker.nextNode()) {
+        node = treeWalker.currentNode;
+        if (node.textContent.trim().length > 0) {
+          nodes.push(node);
+        }
+      }
+      console.log(nodes);
+      return nodes;
+    };
+
+    // hapus dulu, klo ada yg udh ke highlight
+    markdownOutput.querySelectorAll(".annotation-highlight").forEach((span) => {
+      const parent = span.parentNode;
+      while (span.firstChild) {
+        parent.insertBefore(span.firstChild, span);
+      }
+      parent.removeChild(span);
+      parent.normalize();
+    });
+
+    // bungkus yg ada highlight annotation nya pake span, trus di kuningin bg yellow
+    const sortedAnnotations = [...annotations].sort(
+      (a, b) => b.end_index - a.end_index
+    );
+    let textNodes = getTextNodes(markdownOutput);
+    let totalLength = 0;
+
+    for (const node of textNodes) {
+      const nodeLength = node.textContent.length;
+
+      sortedAnnotations.forEach((anno) => {
+        const { start_index, end_index, annotation_text, user_name } = anno;
+
+        const isHighlightWithinNode =
+          end_index > totalLength && start_index < totalLength + nodeLength;
+
+        if (isHighlightWithinNode) {
+          const relativeStart = Math.max(0, start_index - totalLength);
+          const relativeEnd = Math.min(nodeLength, end_index - totalLength);
+
+          if (relativeEnd > relativeStart) {
+            const range = document.createRange();
+            range.setStart(node, relativeStart);
+            range.setEnd(node, relativeEnd);
+
+            const highlightSpan = document.createElement("span");
+            highlightSpan.className =
+              "bg-yellow-300 rounded cursor-pointer annotation-highlight";
+            highlightSpan.dataset.id = anno.annotation_id;
+            highlightSpan.dataset.text = annotation_text || "(No comment)";
+            highlightSpan.dataset.user = user_name || "Anonymous";
+            try {
+              range.surroundContents(highlightSpan);
+            } catch (e) {
+              console.warn("Annotation range error, skipping.", e);
+            }
+          }
+        }
+      });
+      totalLength += nodeLength;
+    }
+
+    markdownOutput.querySelectorAll(".annotation-highlight").forEach((el) => {
+      // klo mouse nya hover si highlighted text, set data" nya ke state viewerAnnotation
+      // biar nnti bisa nampilin text sm annotation nya
+      el.onmouseover = (e) => {
+        const annotationData = annotations.find(
+          (a) => a.annotation_id === parseInt(el.dataset.id)
+        );
+
+        const rect = e.currentTarget.getBoundingClientRect();
+        setViewerAnnotation({
+          visible: true,
+          highlightedText: el.textContent,
+          annotationText: el.dataset.text,
+          userName: el.dataset.user,
+          x: rect.left + rect.width / 2,
+          y: rect.bottom + window.scrollY,
+        });
+      };
+
+      el.onmouseout = (e) => {
+        setTimeout(() => {
+          setViewerAnnotation((prev) => ({ ...prev, visible: false }));
+        }, 100);
+      };
+    });
+  }, [post, annotations]);
+
+  // ini buat dapetin text" yg di sorot
+  const getSelectionData = (selection) => {
+    if (!selection.rangeCount) {
+      setAnnotationIconPosition({ x: 0, y: 0, visible: false });
+      return null;
+    }
+
+    const range = selection.getRangeAt(0);
+    const containerElement = postContentRef.current;
+
+    if (
+      !containerElement.contains(range.startContainer) ||
+      range.collapsed ||
+      selection.toString().trim().length === 0
+    ) {
+      setAnnotationIconPosition({ x: 0, y: 0, visible: false });
+      return null;
+    }
+
+    const preSelectionRange = range.cloneRange();
+    preSelectionRange.selectNodeContents(containerElement);
+    preSelectionRange.setEnd(range.startContainer, range.startOffset);
+
+    let prefixString = preSelectionRange.toString();
+    let highlightedText = selection.toString();
+
+    // regex" ini buat bersihin karakter yg nambah index, soalnya nnti ngebaca index nya jd salah klo ga dibersihin sementara
+    const cleanPrefix = prefixString.replace(/\n/g, "");
+    let startIndex = cleanPrefix.length;
+    let endIndex = startIndex + highlightedText.length;
+
+    let leadingWhitespaceMatch = highlightedText.match(/^\s+/);
+    if (leadingWhitespaceMatch) {
+      let wsLength = leadingWhitespaceMatch[0].length;
+      startIndex += wsLength;
+      highlightedText = highlightedText.trimStart();
+    }
+
+    let trailingWhitespaceMatch = highlightedText.match(/\s+$/);
+    if (trailingWhitespaceMatch) {
+      highlightedText = highlightedText.trimEnd();
+    }
+
+    endIndex = startIndex + highlightedText.length;
+
+    console.log("Final Indices (Corrected):", {
+      startIndex,
+      endIndex,
+      highlightedText,
+    });
+
+    return {
+      highlightedText: highlightedText,
+      startIndex: startIndex,
+      endIndex: endIndex,
+      rect: range.getBoundingClientRect(),
+    };
+  };
+
+  const handleSelection = (e) => {
+    const selection = window.getSelection();
+
+    if (!selection || selection.isCollapsed) {
+      setAnnotationIconPosition({ x: 0, y: 0, visible: false });
+      return;
+    }
+
+    const selectionData = getSelectionData(selection);
+    console.log(selectionData);
+    if (!selectionData) return;
+
+    setCurrentSelection(selectionData);
+
+    const { rect } = selectionData;
+    const containerRect = postContentRef.current.getBoundingClientRect();
+
+    setAnnotationIconPosition({
+      x: rect.left + rect.width / 2,
+      y: rect.top - containerRect.top + 220,
+      visible: true,
+    });
+  };
+
+  const handleIconClick = () => {
+    if (!user) {
+      toast.error("Login required to create annotations.");
+      setAnnotationIconPosition({ x: 0, y: 0, visible: false });
+      return;
+    }
+    setShowAnnotationModal(true);
+    setAnnotationIconPosition({ x: 0, y: 0, visible: false });
+  };
+
+  const saveAnnotation = async (annotationText) => {
+    setShowAnnotationModal(false);
+
+    const payload = {
+      ...currentSelection,
+      annotation_text: annotationText,
+    };
+
+    console.log(payload);
+
+    try {
+      const result = await AxiosInstance.post(
+        `http://localhost:5000/api/v1/posts/annotations/${postId}`,
+        {
+          highlighted_text: payload.highlightedText,
+          annotation_text: payload.annotation_text,
+          start_index: payload.startIndex,
+          end_index: payload.endIndex,
+        }
+      );
+      const newAnnotation = result.data.data;
+
+      const updatedAnnotations = [...annotations, newAnnotation];
+      setAnnotations(updatedAnnotations);
+
+      toast.success("Annotation saved successfully!");
+    } catch (error) {
+      console.error("Failed to save annotation:", error);
+      toast.error("Failed to save annotation. Please try again.");
+    }
+  };
 
   if (isLoading) return <div className="p-10">Loading...</div>;
   if (!isLoading && (!post || !space))
@@ -71,19 +347,17 @@ export default function ViewPost() {
   const handleSavePDF = async () => {
     if (!postContentRef.current) return;
 
-    //  pastiin consistent zoom and scroll position
+    //  pastiin consistent zoom dan scroll position, biar pas di capture ga mencong"
     window.scrollTo(0, 0);
 
     const input = postContentRef.current;
 
-    // generate canvas from post content
     const canvas = await html2canvas(input, {
-      scale: 2 / window.devicePixelRatio, // normalize zoom
+      scale: 2 / window.devicePixelRatio,
       useCORS: true,
       logging: false,
     });
 
-    // use jpg buat type imagenya
     const imgData = canvas.toDataURL("image/jpeg", 0.85);
     const pdf = new jsPDF("p", "mm", "a4");
 
@@ -119,13 +393,12 @@ export default function ViewPost() {
     currentY += 6;
 
     // hr pembatas title dan content
-    pdf.setDrawColor(150, 150, 150); // light gray
+    pdf.setDrawColor(150, 150, 150);
     pdf.setLineWidth(0.3);
     pdf.line(marginX, currentY, pdfWidth - marginX, currentY);
-    //end header
 
-    const contentX = 10; // same as margin
-    const contentWidth = pdfWidth - contentX * 2; // avoid cutting sides
+    const contentX = 10;
+    const contentWidth = pdfWidth - contentX * 2;
 
     pdf.addImage(
       imgData,
@@ -207,8 +480,47 @@ export default function ViewPost() {
 
   return (
     <div className="" style={{ backgroundImage: `url(${bgImage})` }}>
+      {/* ini icon yg muncul seudah highlight text */}
+      {annotationIconPosition.visible && (
+        <div
+          onClick={handleIconClick}
+          className="absolute z-50 p-2 bg-indigo-600 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition"
+          style={{
+            top: `${annotationIconPosition.y}px`,
+            left: `${annotationIconPosition.x}px`,
+            transform: "translateX(-50%)",
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 20h9" />{" "}
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />{" "}
+          </svg>{" "}
+        </div>
+      )}{" "}
+      {showAnnotationModal && (
+        <AnnotationModal
+          highlightedText={currentSelection.highlightedText}
+          onSave={saveAnnotation}
+          onClose={() => setShowAnnotationModal(false)}
+        />
+      )}
+      <AnnotationViewer
+        data={viewerAnnotation}
+        onClose={() =>
+          setViewerAnnotation((prev) => ({ ...prev, visible: false }))
+        }
+      />
       <div className="max-w-[94vw] mx-auto p-6 space-y-10 pt-[6rem] min-h-screen">
-        {/* Post Header */}
         <div className="flex justify-between items-end mb-2">
           <div>
             <p className="text-gray-900 text-m  mb-4">
@@ -265,7 +577,11 @@ export default function ViewPost() {
         </div>
         <hr className="my-6 mb-0" />
 
-        <div ref={postContentRef} className="bg-white p-6 mb-0">
+        <div
+          ref={postContentRef}
+          className="bg-white p-6 mb-0 relative"
+          onMouseUp={handleSelection}
+        >
           <div className="prose max-w-none" data-color-mode="light">
             <MDEditor.Markdown
               source={post.post_body}
@@ -276,7 +592,6 @@ export default function ViewPost() {
 
         <hr className="my-6 mt-0" />
 
-        {/* Comments Section */}
         <div>
           <CommentSection />
         </div>
