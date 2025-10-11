@@ -140,47 +140,72 @@ export default function ViewPost() {
       parent.normalize();
     });
 
-    // bungkus yg ada highlight annotation nya pake span, trus di kuningin bg yellow
+    // sort dulu annotation nya, pake end index biar bs overlapping, klo start index bakal error ketika overlapping highlight
     const sortedAnnotations = [...annotations].sort(
       (a, b) => b.end_index - a.end_index
     );
+
     let textNodes = getTextNodes(markdownOutput);
     let totalLength = 0;
+    let nodeIndex = 0;
 
-    for (const node of textNodes) {
-      const nodeLength = node.textContent.length;
+    sortedAnnotations.forEach((anno) => {
+      const { start_index, end_index, annotation_text, user_name } = anno;
 
-      sortedAnnotations.forEach((anno) => {
-        const { start_index, end_index, annotation_text, user_name } = anno;
+      let currentLength = 0;
+      let startNode = null;
+      let endNode = null;
+      let startOffset = 0;
+      let endOffset = 0;
 
-        const isHighlightWithinNode =
-          end_index > totalLength && start_index < totalLength + nodeLength;
-
-        if (isHighlightWithinNode) {
-          const relativeStart = Math.max(0, start_index - totalLength);
-          const relativeEnd = Math.min(nodeLength, end_index - totalLength);
-
-          if (relativeEnd > relativeStart) {
-            const range = document.createRange();
-            range.setStart(node, relativeStart);
-            range.setEnd(node, relativeEnd);
-
-            const highlightSpan = document.createElement("span");
-            highlightSpan.className =
-              "bg-yellow-300 rounded cursor-pointer annotation-highlight";
-            highlightSpan.dataset.id = anno.annotation_id;
-            highlightSpan.dataset.text = annotation_text || "(No comment)";
-            highlightSpan.dataset.user = user_name || "Anonymous";
-            try {
-              range.surroundContents(highlightSpan);
-            } catch (e) {
-              console.warn("Annotation range error, skipping.", e);
-            }
-          }
+      for (const node of textNodes) {
+        const len = node.textContent.length;
+        if (
+          start_index >= currentLength &&
+          start_index <= currentLength + len
+        ) {
+          startNode = node;
+          startOffset = start_index - currentLength;
         }
-      });
-      totalLength += nodeLength;
-    }
+        if (end_index >= currentLength && end_index <= currentLength + len) {
+          endNode = node;
+          endOffset = end_index - currentLength;
+          break;
+        }
+        currentLength += len;
+      }
+
+      if (
+        startNode &&
+        endNode &&
+        startNode === endNode &&
+        endOffset > startOffset
+      ) {
+        const range = document.createRange();
+        range.setStart(startNode, startOffset);
+        range.setEnd(endNode, endOffset);
+
+        // highlight manual bungkus pake span, trs set bg yellow
+        const highlightSpan = document.createElement("span");
+        highlightSpan.className =
+          "bg-yellow-300 rounded cursor-pointer annotation-highlight";
+        highlightSpan.dataset.id = anno.annotation_id;
+        highlightSpan.dataset.text = annotation_text || "(No comment)";
+        highlightSpan.dataset.user = user_name || "Anonymous";
+
+        try {
+          range.surroundContents(highlightSpan);
+          markdownOutput.normalize();
+          textNodes = getTextNodes(markdownOutput);
+        } catch (e) {
+          console.warn("Annotation range error, skipping.", e);
+        }
+      } else if (startNode && endNode) {
+        console.warn(
+          "Annotation spans multiple text nodes, skipping for simplicity."
+        );
+      }
+    });
 
     markdownOutput.querySelectorAll(".annotation-highlight").forEach((el) => {
       // klo mouse nya hover si highlighted text, set data" nya ke state viewerAnnotation
