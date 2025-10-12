@@ -172,7 +172,7 @@ export default function CommentSection() {
           comments.map((comment) => (
             <div
               key={comment.comment_id}
-              className="bg-white p-4 rounded-md shadow-sm border"
+              className="bg-white p-4 rounded-md shadow-md"
             >
               {/* Header Comment */}
               <div className="flex items-center justify-between mb-2">
@@ -203,10 +203,12 @@ export default function CommentSection() {
               </div>
 
               {/* Comment Content */}
-              <MDEditor.Markdown
-                source={comment.comment_body}
-                style={{ background: "transparent" }}
-              />
+              <div data-color-mode="light">
+                <MDEditor.Markdown
+                  source={comment.comment_body}
+                  style={{ background: "transparent" }}
+                />
+              </div>
 
               {/* Voting Section */}
               <div className="flex gap-4 items-center mt-3 text-gray-600">
