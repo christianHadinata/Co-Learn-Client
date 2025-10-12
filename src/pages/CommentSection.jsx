@@ -238,7 +238,7 @@ export default function CommentSection() {
             </div>
           ))
         ) : (
-          <p className="text-gray-500 italic">Belum ada komentar.</p>
+          <p className="text-gray-500 italic">No comments found".</p>
         )}
       </div>
     </div>
