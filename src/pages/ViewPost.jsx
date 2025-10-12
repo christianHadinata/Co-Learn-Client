@@ -376,13 +376,15 @@ export default function ViewPost() {
     window.scrollTo(0, 0);
 
     const input = postContentRef.current;
-
     const canvas = await html2canvas(input, {
-      scale: 2 / window.devicePixelRatio,
+      scale: 3,
       useCORS: true,
       logging: false,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      windowWidth: document.documentElement.offsetWidth,
+      windowHeight: document.documentElement.scrollHeight,
     });
-
     const imgData = canvas.toDataURL("image/jpeg", 0.85);
     const pdf = new jsPDF("p", "mm", "a4");
 
@@ -404,16 +406,16 @@ export default function ViewPost() {
     })`;
 
     pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(16);
+    pdf.setFontSize(12);
     pdf.text(title, marginX, currentY);
     currentY += lineHeight;
 
     pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(12);
+    pdf.setFontSize(10);
     pdf.text(subtitle, marginX, currentY);
     currentY += lineHeight;
 
-    pdf.setFontSize(11);
+    pdf.setFontSize(8);
     pdf.text(authorLine, marginX, currentY);
     currentY += 6;
 
@@ -422,19 +424,52 @@ export default function ViewPost() {
     pdf.setLineWidth(0.3);
     pdf.line(marginX, currentY, pdfWidth - marginX, currentY);
 
-    const contentX = 10;
-    const contentWidth = pdfWidth - contentX * 2;
+    const zoom = 1.25; // 👈 try 1.2–1.4 for bigger text
 
-    pdf.addImage(
-      imgData,
-      "JPEG",
-      contentX,
-      currentY,
-      contentWidth,
-      pdfHeight,
-      "",
-      "FAST"
-    );
+    const contentX = 10;
+    // ===== FIX: Proper page-splitting =====
+    const pageHeightPx =
+      (pdf.internal.pageSize.getHeight() * canvas.width) / pdfWidth;
+    let position = 0;
+    let pageIndex = 0;
+
+    while (position < canvas.height) {
+      // Buat potongan canvas baru untuk tiap halaman
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = Math.min(pageHeightPx, canvas.height - position);
+      const ctx = pageCanvas.getContext("2d");
+
+      ctx.drawImage(
+        canvas,
+        0,
+        position,
+        canvas.width,
+        pageCanvas.height,
+        0,
+        0,
+        canvas.width,
+        pageCanvas.height
+      );
+
+      const pageData = pageCanvas.toDataURL("image/jpeg", 0.9);
+      const pagePdfHeight = (pageCanvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(
+        pageData,
+        "JPEG",
+        contentX,
+        pageIndex === 0 ? currentY : 0, // cuma halaman pertama yang ada header offset
+        pdfWidth - contentX * 2,
+        pagePdfHeight,
+        "",
+        "FAST"
+      );
+
+      position += pageHeightPx;
+      pageIndex++;
+      if (position < canvas.height) pdf.addPage();
+    }
 
     pdf.save(`${post?.post_title || "post"}.pdf`);
   };
