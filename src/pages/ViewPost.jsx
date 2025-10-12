@@ -600,11 +600,10 @@ export default function ViewPost() {
             <span className="text-sm font-medium">{downvotes}</span>
           </button>
         </div>
-        <hr className="my-6 mb-0" />
 
         <div
           ref={postContentRef}
-          className="bg-white p-6 mb-0 relative"
+          className="bg-white p-6 mb-0 relative rounded-lg shadow-sm"
           onMouseUp={handleSelection}
         >
           <div className="prose max-w-none" data-color-mode="light">
@@ -615,9 +614,7 @@ export default function ViewPost() {
           </div>
         </div>
 
-        <hr className="my-6 mt-0" />
-
-        <div>
+        <div className="mt-8">
           <CommentSection />
         </div>
       </div>
