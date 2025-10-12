@@ -78,7 +78,7 @@ export default function CreatePost() {
       if (data.success === true) {
         setTitle("");
         setMarkdownValue("");
-        navigate(`/space/${id}`, {
+        navigate(`/space/${id}/post/${newPostId}`, {
           state: {
             successMessage: "Success! Post Successfully Created",
           },
