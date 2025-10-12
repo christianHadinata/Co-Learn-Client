@@ -34,6 +34,10 @@ export default function ViewSpace() {
   }, [location.state]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id]);
+
+  useEffect(() => {
     const fetchDetailSpaceData = async () => {
       try {
         const result = await AxiosInstance.get(
