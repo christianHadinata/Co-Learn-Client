@@ -69,7 +69,6 @@ export default function Homepage() {
     <div className="bg-center" style={{ backgroundImage: `url(${bgImage})` }}>
       <main className="p-10  pb-[20rem]">
         <section className="relative flex flex-col items-center justify-center text-center min-h-[80vh] md:px-16 overflow-hidden">
-          {/* Floating Icons around the heading */}
           <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={iconHeart}
@@ -108,7 +107,7 @@ export default function Homepage() {
             />
           </div>
 
-          {/* Text Section */}
+          {/* hero title */}
           <div className="relative z-10 max-w-2xl px-4 pt-8">
             {user ? (
               <>
@@ -153,7 +152,7 @@ export default function Homepage() {
             )}
           </div>
 
-          {/* Floating animation keyframes */}
+          {/* animasi floating icon */}
           <style>{`
     @keyframes float {
       0%, 100% { transform: translateY(0px); }
@@ -165,7 +164,7 @@ export default function Homepage() {
   `}</style>
         </section>
 
-        {/* Co-Learning Spaces */}
+        {/* spaces list*/}
         <section id="learning-space" className="relative px-4 scroll-mt-16">
           <h2 className="text-4xl font-semibold mb-6 text-center py-10 text-gray-700">
             Co-Learning Spaces
@@ -188,15 +187,3 @@ export default function Homepage() {
     </div>
   );
 }
-
-//   return (
-//     <div className="h-screen flex justify-center items-center">
-//       {" "}
-//       {user ? (
-//         <h1 className="text-5xl font-semibold">Hello, {user.user_name}!</h1>
-//       ) : (
-//         <h1 className="text-5xl font-semibold">Welcome to the Homepage</h1>
-//       )}
-//     </div>
-//   );
-// }

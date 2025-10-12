@@ -609,7 +609,7 @@ export default function ViewPost() {
         </div>
 
         <div className="flex items-center gap-6 my-4 bg-white px-4 py-2 rounded-full w-fit">
-          {/* Upvote */}
+          {/* upvote */}
           <button
             onClick={() => handleVote("upvote")}
             className={`flex items-center gap-1 transition cursor-pointer ${
@@ -622,7 +622,7 @@ export default function ViewPost() {
             <span className="text-sm font-medium">{upvotes}</span>
           </button>
 
-          {/* Downvote */}
+          {/* downvote */}
           <button
             onClick={() => handleVote("downvote")}
             className={`flex items-center gap-1 transition cursor-pointer ${

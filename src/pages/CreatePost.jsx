@@ -78,6 +78,7 @@ export default function CreatePost() {
       if (data.success === true) {
         setTitle("");
         setMarkdownValue("");
+        const newPostId = data.data?.post_id;
         navigate(`/space/${id}/post/${newPostId}`, {
           state: {
             successMessage: "Success! Post Successfully Created",
@@ -93,7 +94,7 @@ export default function CreatePost() {
     <div className="bg-center" style={{ backgroundImage: `url(${bgImage})` }}>
       <div className="flex flex-col w-full justify-start min-h-screen">
         <div className="flex flex-col md:flex-row p-6  gap-6 mt-16 pb-2 mb-2 min ">
-          {/* Panel Editor */}
+          {/* left side : editor */}
           <div className="flex-1 flex flex-col  bg-[#f8fafb70] rounded-lg shadow-lg p-6 min-h-[calc(100vh*9/12)] ">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Title</h2>
             <input
@@ -114,7 +115,7 @@ export default function CreatePost() {
             </div>
           </div>
 
-          {/* Panel Pratinjau */}
+          {/* right : preview*/}
           <div
             className="flex-1 flex flex-col   bg-[#fcfeff]  rounded-lg shadow-lg p-6  h-[calc(100vh*9/12)] "
             data-color-mode="light"

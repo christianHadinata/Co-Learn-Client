@@ -67,14 +67,6 @@ export default function ViewSpace() {
         console.log(error);
       }
     };
-    // const found = mockSpaces.find((s) => s.id === Number(id)); //cari space di mock
-    // if (found) {
-    //   //masukin isinya
-    //   const posts = mockPosts.filter((p) => p.spaceId === found.id);
-    //   setSpace({ ...found, posts });
-    // } else {
-    //   setSpace(null);
-    // }
 
     const fetchIsJoinedSpace = async () => {
       try {
@@ -181,10 +173,10 @@ export default function ViewSpace() {
         )}
       </section>
 
-      {/* Overview */}
+      {/* overview */}
       <section>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start border-b pb-6">
-          {/* Thumbnail */}
+          {/* thumbnail */}
           <div className="md:col-span-1">
             <div className="w-full aspect-[16/9] rounded-xl overflow-hidden bg-gray-200">
               {space.space_photo_url ? (
@@ -201,7 +193,7 @@ export default function ViewSpace() {
             </div>
           </div>
 
-          {/* Overview text */}
+          {/* overview text */}
           <div className="md:col-span-2">
             <h2 className="text-xl font-semibold mb-4">Overview</h2>
             <p className="text-gray-700">{space.space_description}</p>
@@ -209,7 +201,7 @@ export default function ViewSpace() {
         </div>
       </section>
 
-      {/* Prerequisites */}
+      {/* prerequisites */}
       <section>
         <h3 className="font-semibold mb-4">Prerequisites</h3>
         <div className="flex flex-wrap gap-2">
@@ -228,9 +220,9 @@ export default function ViewSpace() {
         </div>
       </section>
 
-      {/* Grid: Active Users + Posts */}
+      {/* section middle : active user, post */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Active users */}
+        {/* active users */}
         <div className="md:col-span-1 space-y-8 min-h-[150px]">
           <h3 className="font-semibold mb-4">Active Users</h3>
           {space.activeUsers.length > 0 ? (
@@ -242,7 +234,7 @@ export default function ViewSpace() {
           )}
         </div>
 
-        {/* Posts */}
+        {/* posts  space ini*/}
         <div className="md:col-span-2 min-h-[150px]">
           {posts.length > 0 ? (
             <div className="flex flex-col h-full ">
@@ -280,7 +272,7 @@ export default function ViewSpace() {
         </div>
       </section>
 
-      {/* Related Spaces */}
+      {/* related spaces */}
       <section className="mt-10">
         <h3 className="text-xl font-semibold mb-4">Related Learning Spaces</h3>
         {relatedSpaces.length > 0 ? (

@@ -66,7 +66,7 @@ export default function SignUpPage() {
 
   return (
     <React.Fragment>
-      {/* Background */}
+      {/* background element */}
       <div className="gradient-bg absolute inset-0 -z-10">
         <div className="gradients-container">
           <div className="g1"></div>
@@ -78,10 +78,10 @@ export default function SignUpPage() {
         </div>
       </div>
 
-      {/* Card */}
+      {/* card */}
       <div className="absolute flex items-center justify-center min-h-full min-w-full z-10 ">
         <div className="login-card relative bg-white/30 backdrop-blur-lg rounded-2xl shadow-lg p-6 flex flex-col w-full md:w-1/2 xl:w-1/3 2xl:w-1/3 3xl:w-1/4 mx-auto md:p-10 2xl:p-12 3xl:p-14 pt-2 pb-2">
-          {/* Back to Home */}
+          {/* nav to home */}
           <Link
             to="/"
             className="text-sm absolute top-6 left-6 text-[#4F46E5] self-start mb-4 flex flex-row"
