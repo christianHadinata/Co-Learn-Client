@@ -182,7 +182,7 @@ export default function ViewSpace() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start border-b pb-6">
           {/* Thumbnail */}
           <div className="md:col-span-1">
-            <div className="w-full h-48 md:h-56 rounded-xl overflow-hidden bg-gray-200">
+            <div className="w-full aspect-[16/9] rounded-xl overflow-hidden bg-gray-200">
               {space.space_photo_url ? (
                 <img
                   src={`http://localhost:5000/${space.space_photo_url}`}
