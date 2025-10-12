@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import MainLayout from "./components/MainLayout";
-import Homepage from "./pages/Homepage";
+import Homepage from "./pages/HomePage";
 import Profile from "./pages/ProfilePage";
 import NewLearningSpace from "./pages/CreateLearningSpacePage";
 import ViewSpace from "./pages/ViewSpace";

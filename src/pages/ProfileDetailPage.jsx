@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import React from "react";
 import "./style.css";
 import defaultProfileImage from "../assets/default-profile.jpg";
-
+import bgimg from "../assets/bg-more.png";
 export default function Profile() {
   const [profile, setProfile] = useState({
     name: "",
@@ -53,19 +53,11 @@ export default function Profile() {
 
   return (
     <React.Fragment>
-      {/* Background */}
-      <div className="gradient-bg absolute inset-0 -z-10">
-        <div className="gradients-container">
-          <div className="p1"></div>
-          <div className="p2"></div>
-          <div className="p3"></div>
-          <div className="p4"></div>
-          <div className="p5"></div>
-        </div>
-      </div>
-
       {/* profile card */}
-      <div className="absolute w-full min-h-screen flex justify-center items-center z-10">
+      <div
+        className="absolute w-full min-h-screen flex justify-center items-center z-10 bg-center"
+        style={{ backgroundImage: `url(${bgimg})` }}
+      >
         <div className="bg-white/50 backdrop-blur-md rounded-xl shadow-xl p-8 w-96 relative z-10">
           <div className="flex justify-center mb-6">
             <div className="flex justify-center mb-6">
