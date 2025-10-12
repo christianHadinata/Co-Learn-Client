@@ -69,10 +69,7 @@ export default function Profile() {
         <div className="bg-white/50 backdrop-blur-md rounded-xl shadow-xl p-8 w-96 relative z-10">
           <div className="flex justify-center mb-6">
             <div className="flex justify-center mb-6">
-              <label
-                htmlFor="profile-picture-input"
-                className="cursor-pointer relative"
-              >
+              <div className="profile-picture cursor-default select-none">
                 <img
                   src={
                     profilePhotoUrl
@@ -82,7 +79,7 @@ export default function Profile() {
                   alt="User"
                   className="w-20 h-20 rounded-full border-2 border-gray-200 object-cover"
                 />
-              </label>
+              </div>
             </div>
           </div>
 
